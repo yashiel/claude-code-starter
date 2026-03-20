@@ -1,0 +1,51 @@
+{
+  "$schema": "https://docs.anthropic.com/claude-code/settings-schema.json",
+  "permissions": {
+    "allowedTools": [
+      "Read",
+      "Write",
+      "Glob",
+      "Grep",
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(git *)",
+      "Bash(node *)",
+      "Bash(cat *)",
+      "Bash(ls *)",
+      "Bash(mkdir *)",
+      "Bash(cp *)",
+      "Bash(mv *)"
+    ],
+    "deny": [
+      "Read(.env)",
+      "Read(.env.*)",
+      "Write(.env)",
+      "Write(.env.*)",
+      "Read(*.pem)",
+      "Read(*.key)",
+      "Write(src/generated/**)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write(*.ts)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsc --noEmit --pretty 2>&1 | head -20 || true"
+          }
+        ]
+      },
+      {
+        "matcher": "Write(*.tsx)",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "npx tsc --noEmit --pretty 2>&1 | head -20 || true"
+          }
+        ]
+      }
+    ]
+  }
+}
