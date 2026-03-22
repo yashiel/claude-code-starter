@@ -53,9 +53,22 @@ Public: `NEXT_PUBLIC_APPWRITE_ENDPOINT`, `NEXT_PUBLIC_APPWRITE_PROJECT`, `NEXT_P
 Server-only: `NEXT_APPWRITE_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `PAYPAL_CLIENT_ID`, `PAYPAL_CLIENT_SECRET`, `PAYPAL_API_URL`, `TNG_CLIENT_ID`, `TNG_PARTNER_ID`, `TNG_PRIVATE_KEY`, `TNG_PUBLIC_KEY`, `TNG_API_URL`, `TNG_APP_ID`
 
 ## Deployment
-Vercel: `deploy-to-vercel` skill or Vercel MCP, git-push deploys, Edge middleware.
+
+### Dual-Repo Strategy
+```
+{project-name}          ← Full project (CLAUDE.md, docs/, tasks/, tools/, src/, everything)
+{project-name}-app      ← Deployable app only (src/, configs, package.json — what cloud providers need)
+```
+- **Full repo** = development workspace, Claude Code context, planning, security docs
+- **App repo** = production artifact, connected to cloud provider for auto-deploy
+- Cloud providers (Vercel, Appwrite Sites, Heroku, Railway) deploy from the `-app` repo
+- See `CLAUDE.md > Publishing Protocol` for exact steps
+
+### Cloud Providers
+Vercel: `deploy-to-vercel` skill or Vercel MCP, git-push deploys from `-app` repo, Edge middleware.
 Appwrite Sites: CLI deploy, SSR adapter, console env vars.
+Heroku/Railway: git-push deploys from `-app` repo, Procfile if needed.
 CI: Push → Lint → TSC → Test → Build → Deploy (preview) → Merge → Deploy (prod)
 
 ## Key Decisions
-Appwrite > custom backend (BaaS) · shadcn > library (source ownership) · Server Components first (no waterfalls) · TanStack Query only when needed · Stripe Checkout (simplest PCI) · MCP for development workflow, SDK for application code · See `docs/decisions/`
+Appwrite > custom backend (BaaS) · shadcn > library (source ownership) · Server Components first (no waterfalls) · TanStack Query only when needed · Stripe Checkout (simplest PCI) · MCP for development workflow, SDK for application code · Dual-repo (full context + clean deploy) · See `docs/decisions/`

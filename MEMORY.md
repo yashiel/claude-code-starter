@@ -26,6 +26,7 @@
 - Research real products (3-5 examples) before designing any interface
 - Accessibility is non-negotiable: WCAG 2.1 AA, keyboard nav, screen reader, 44px touch targets
 - No AI slop — every pixel intentional, production-grade, would-a-Creative-Director-approve standard
+- Dual-repo publishing: full project repo + deployable app-only repo when publishing to GitHub
 - Memory updates are mandatory at session end
 
 **Project state**:
@@ -46,4 +47,4 @@
 
 | Date | Summary |
 |------|---------|
-| 2026-03-22 | Initial repo creation, published to GitHub, 8-role thinking mindset (eng + design), session protocol, Design Philosophy (zero AI slop), Design Standards in CONVENTIONS.md, memory system |
+| 2026-03-22 | Initial repo creation, published to GitHub, 8-role thinking, Design Philosophy (zero AI slop), Design Standards, dual-repo publishing protocol, memory system |

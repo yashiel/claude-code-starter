@@ -125,7 +125,7 @@ When encountering ANY error:
 
 ## Task Flow
 1. **Research** — read relevant docs (Context7, web, MCP docs) before planning
-2. **Plan** → `tasks/todo.md` with checkable items. Use `EnterPlanMode`. Think through all 5 lenses.
+2. **Plan** → `tasks/todo.md` with checkable items. Use `EnterPlanMode`. Think through all 8 lenses.
 3. **Invoke Skills** — load all applicable skills before implementation
 4. Verify plan before coding
 5. Track progress as you go (TodoWrite)
@@ -133,6 +133,65 @@ When encountering ANY error:
 7. Document results in `tasks/todo.md`
 8. Capture lessons → `tasks/gotchas.md`
 9. **Update `MEMORY.md`** — session summary for continuity
+
+## Publishing Protocol (Dual-Repo Strategy)
+When asked to "publish to GitHub" or "push to GitHub", ALWAYS create TWO repositories:
+
+### Repo 1: Full Project (source of truth)
+- **Name**: `{project-name}` (e.g. `my-saas-app`)
+- **Contains**: EVERYTHING — `CLAUDE.md`, `MEMORY.md`, `docs/`, `tasks/`, `tools/`, `.claude/`, `scripts/`, `src/`, config files, etc.
+- **Purpose**: Full development context. Claude Code workspace. Planning docs, gotchas, security playbook, ADRs — the entire knowledge base.
+- **Visibility**: Public or Private (user's choice)
+
+### Repo 2: Deployable App (production source)
+- **Name**: `{project-name}-app` (e.g. `my-saas-app-app`)
+- **Contains**: ONLY the deployable application — the Next.js project files that cloud providers need:
+  ```
+  src/                  → application source code
+  public/               → static assets
+  package.json          → dependencies
+  package-lock.json     → lockfile
+  tsconfig.json         → TypeScript config
+  next.config.ts        → Next.js config
+  tailwind.config.ts    → Tailwind config
+  postcss.config.mjs    → PostCSS config
+  components.json       → shadcn config
+  .env.example          → env template (NO secrets)
+  .gitignore            → standard Next.js ignores
+  README.md             → deployment & setup instructions only
+  ```
+- **Excludes**: `CLAUDE.md`, `MEMORY.md`, `docs/`, `tasks/`, `tools/`, `.claude/`, `scripts/`, `tests/` (unless CI needs them), any dev-only files
+- **Purpose**: Clean, deployable source. Connect to Vercel/Appwrite Sites/Heroku/Railway for auto-deploy.
+- **Visibility**: Matches Repo 1
+
+### How to Execute
+```bash
+# 1. Create full project repo (already has all files)
+gh repo create {project-name} --public --source=. --remote=origin --push
+
+# 2. Create deployable repo
+mkdir -p /tmp/{project-name}-app
+# Copy ONLY deployable files
+cp -r src/ public/ package.json package-lock.json tsconfig.json \
+      next.config.ts tailwind.config.ts postcss.config.mjs \
+      components.json .env.example .gitignore /tmp/{project-name}-app/
+# Write a deploy-focused README
+# Init git, commit, create repo, push
+cd /tmp/{project-name}-app
+git init && git add -A && git commit -m "Initial deployable release"
+gh repo create {project-name}-app --public --source=. --remote=origin --push
+```
+
+### Keeping Repos In Sync
+When the user makes changes to `src/` or config files in the full repo:
+- Remind user to sync to the app repo
+- Or set up a GitHub Action in the full repo that auto-copies deployable files to the app repo on push to `main`
+
+### Why Two Repos?
+- Cloud providers (Vercel, Appwrite Sites, Heroku) only need the app — no dev docs, no planning files, no security playbooks
+- Full repo stays as the development workspace with all context
+- App repo stays clean, minimal, fast to clone and deploy
+- Separation of concerns: development context vs production artifact
 
 ## Commands
 ```bash
