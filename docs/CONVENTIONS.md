@@ -1,13 +1,22 @@
 # Conventions
 
 ## Files
-Components: `PascalCase.tsx` · Utils/hooks: `camelCase.ts` · Actions: `actions/[domain].ts` · Tests: `[name].test.ts` · Next.js specials: lowercase. Target <200 lines, max 300. One component per file. No barrel files. Import order: externals → `@/lib` → `@/components` → `@/types` → styles.
+Components: `PascalCase.tsx` · Utils/hooks: `camelCase.ts` · Actions: `actions/[domain].ts` · Tests: `[name].test.ts` · Next.js specials: lowercase. Target 200-400 lines, max 800. One component per file. No barrel files. Import order: externals → `@/lib` → `@/components` → `@/types` → styles.
+
+## Code Quality Invariants
+- **Functions**: <50 lines. Single responsibility. Clear name = no comment needed.
+- **Nesting**: max 4 levels deep. Extract early returns, guard clauses, helper functions.
+- **Immutability**: always create new objects, never mutate. `const` by default. Spread/map over push/splice.
+- **Error handling**: handle at every level. Never swallow silently. Fail closed.
+- **Input validation**: validate at system boundaries (API routes, Server Actions, form submissions). Fail fast with Zod.
+- **No magic values**: extract to named constants. `const MAX_RETRIES = 3` not `3`.
+- **Pure functions**: prefer functions without side effects. Side effects belong at the boundary, not in the logic.
 
 ## TypeScript
 `interface` for extendable shapes · `type` for unions · Never `any` → `unknown` + narrow · Explicit return types · `as const` for literals · Appwrite docs extend `Models.Document`
 
 ## Error Handling
-Custom `AppError` from `lib/errors.ts` · `redirect()`/`notFound()` OUTSIDE try/catch or use `unstable_rethrow()` · Fail closed · Generic client messages, detailed server logs
+Custom `AppError` from `lib/errors.ts` · `redirect()`/`notFound()` OUTSIDE try/catch or use `unstable_rethrow()` · Fail closed · Generic client messages, detailed server logs · Every error handler logs context + correlation ID · Never expose stack traces to users
 
 ## RSC Boundaries
 Server Components default · `"use client"` only for hooks/events/browser APIs · No async client components · Serialisable props only (no Date/Map/Set/functions except Server Actions) · Convert Appwrite dates to ISO strings

@@ -27,6 +27,12 @@
 - Accessibility is non-negotiable: WCAG 2.1 AA, keyboard nav, screen reader, 44px touch targets
 - No AI slop — every pixel intentional, production-grade, would-a-Creative-Director-approve standard
 - Dual-repo publishing: full project repo + deployable app-only repo when publishing to GitHub
+- Multi-agent orchestration: specialised agents dispatched by task type (feature/bugfix/refactor/UI chains)
+- Search-first protocol: Adopt > Extend > Compose > Build — always check existing before writing custom
+- 6-phase Verification Loop: Build → TypeCheck → Lint → Tests → Security → Diff — ALL must pass before done
+- Immutability principle: new objects, never mutate; pure functions over side effects
+- Hooks over prompts: deterministic enforcement via hooks > probabilistic LLM instructions
+- Observations evolve: gotcha (0.3) → pattern (0.6) → rule (0.9) — confidence-weighted learning
 - Memory updates are mandatory at session end
 
 **Project state**:
@@ -47,4 +53,4 @@
 
 | Date | Summary |
 |------|---------|
-| 2026-03-22 | Initial repo creation, published to GitHub, 8-role thinking, Design Philosophy (zero AI slop), Design Standards, dual-repo publishing protocol, memory system |
+| 2026-03-22 | Initial repo, 8-role thinking, Design Philosophy, dual-repo publishing, multi-agent orchestration (from ECC), search-first, verification loop, immutability, hooks-over-prompts, AGENTS.md |

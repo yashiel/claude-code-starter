@@ -78,22 +78,46 @@ Every UI element must pass these gates. If it looks like AI generated it, it fai
 - **Iteration > Perfection** — ship, learn, update `tasks/gotchas.md`
 - **Plan Before Code** — ALWAYS enter planning mode first. No exceptions. Think architecturally.
 - **Skills Are Mandatory** — if a skill exists for the task, USE IT. No rationalising skips.
+- **Search First** — before writing ANY new code: search for existing packages, MCP tools, skills, and patterns. Decision matrix: Adopt (use directly) > Extend (install + thin wrapper) > Compose (combine packages) > Build (custom, informed by research). Never reinvent what exists.
 - **Research First** — use Context7, WebSearch, Firecrawl, and MCP docs to get current information. Never rely on stale training data when live docs exist.
+- **Immutability** — always create new objects, never mutate existing ones. Pure functions over side effects.
+- **Hooks Over Prompts** — deterministic enforcement via hooks > probabilistic prompt instructions. Use scripts for calendar math, file validation, timezone handling — not the LLM.
 - **Memory Is Continuous** — update `MEMORY.md` at end of every session. Next session starts by reading it.
+- **Observations Evolve** — mistakes → gotchas → rules → skills. Confidence-weighted: tentative (0.3) → probable (0.6) → near-certain (0.9).
 
 ## Workflow
-1. **Plan Mode ALWAYS** — plan ANY 2+ step task. Enter `EnterPlanMode` before touching code. STOP and re-plan if sideways. Write specs upfront. Think architecturally through all 5 role lenses.
-2. **Research Before Building** — use Context7/WebSearch/Firecrawl to read latest docs, APIs, and patterns BEFORE implementing. Never guess when you can look it up.
-3. **Skills First** — check available skills before ANY action. If a skill applies (even 1% chance), invoke it. Use `brainstorm` skill before creative work. Use `plan` skill for planning. Use domain skills (shadcn, next-best-practices, owasp-security, etc.) for implementation.
-4. **Subagents** — split research/execution/analysis. One task per agent. Parallelise independent work.
-5. **Self-Improvement** — log mistakes → `tasks/gotchas.md` → convert to rules → review at session start.
-6. **Verify Before Done** — never mark done without proof. Run tests, check types, lint. "Would a staff engineer approve this?"
-7. **Demand Elegance** — non-trivial: "is there a cleaner way?" Simple: don't over-engineer.
-8. **Autonomous Bugs** — just fix it. Root cause, not symptoms. No hand-holding. Use `systematic-debugging` skill.
-9. **Skills = System Layer** — code + scripts + data, not just markdown.
-10. **File System = Context** — `references/`, `scripts/`, `templates/` for progressive disclosure.
-11. **Don't Over-Constrain** — context > control. Flexibility > rigid steps.
-12. **Memory Discipline** — update memory at session end. Read memory at session start. Context must survive across sessions.
+1. **Plan Mode ALWAYS** — plan ANY 2+ step task. Enter `EnterPlanMode` before touching code. STOP and re-plan if sideways. Write specs upfront. Think architecturally through all 8 lenses.
+2. **Search First** — before writing new code, search for existing packages/MCP tools/skills/patterns. Adopt > Extend > Compose > Build.
+3. **Research Before Building** — use Context7/WebSearch/Firecrawl to read latest docs, APIs, and patterns BEFORE implementing. Never guess when you can look it up.
+4. **Skills First** — check available skills before ANY action. If a skill applies (even 1% chance), invoke it. Use `brainstorm` skill before creative work. Use `plan` skill for planning. Use domain skills (shadcn, next-best-practices, owasp-security, etc.) for implementation.
+5. **Agent Orchestration** — dispatch specialised subagents for complex work. See `docs/AGENTS.md` for full patterns. Orchestration chains by task type:
+   - **Feature**: planner → researcher → implementer → code-reviewer → security-reviewer
+   - **Bugfix**: debugger → implementer → code-reviewer
+   - **Refactor**: architect → code-reviewer → implementer
+   - **UI/Design**: design researcher → implementer → design-auditor → a11y-reviewer
+6. **Verify Before Done** — run the 6-phase verification loop: Build → TypeCheck → Lint → Tests → Security Scan → Diff Review. Never mark done without all phases passing.
+7. **Self-Improvement** — log mistakes → `tasks/gotchas.md` → convert to rules → review at session start. Observations evolve: gotcha (0.3) → pattern (0.6) → rule (0.9).
+8. **Demand Elegance** — non-trivial: "is there a cleaner way?" Simple: don't over-engineer.
+9. **Autonomous Bugs** — just fix it. Root cause, not symptoms. No hand-holding. Use `systematic-debugging` skill.
+10. **Skills = System Layer** — code + scripts + data, not just markdown.
+11. **File System = Context** — `references/`, `scripts/`, `templates/` for progressive disclosure.
+12. **Don't Over-Constrain** — context > control. Flexibility > rigid steps.
+13. **Memory Discipline** — update memory at session end. Read memory at session start. Context must survive across sessions.
+
+## Verification Loop (run before ANY completion claim)
+Every task must pass all 6 phases before claiming "done":
+
+| Phase | Command | Fail Action |
+|-------|---------|-------------|
+| 1. Build | `npm run build` | Fix build errors, re-run |
+| 2. TypeCheck | `npx tsc --noEmit` | Fix type errors, re-run |
+| 3. Lint | `npm run lint` | Fix lint issues, re-run |
+| 4. Tests | `npm test` | Fix failing tests, re-run |
+| 5. Security | Run `owasp-security` / `vibesec-skill` | Fix CRITICAL issues immediately |
+| 6. Diff Review | `git diff` — review all changes | Remove dead code, check for secrets, verify intent |
+
+**Output**: Structured VERIFICATION REPORT — READY or NOT READY with specific failures listed.
+**Rule**: If ANY phase fails, the task is NOT done. Fix and re-verify. No exceptions.
 
 ## Session Protocol
 
@@ -235,20 +259,23 @@ Server Components → reads (node-appwrite or Appwrite MCP) · Server Actions �
 **Payments**: See `docs/PAYMENTS.md`. Stripe Checkout Sessions. PayPal Orders v2 + JS SDK. TNG server-to-server RSA256, amount STRING in cents, handle `U` status.
 
 ## Quality Gate (every change)
-- **Code**: remove dead code/duplicates/unused. Beginner-readable. No magic values.
-- **Security**: apply `docs/security-playbook.md`. Reference rule IDs (AUTH-02, INJ-01). Pre-Commit Checklist §22.
-- **Tests**: run all. Worst-case + best-case. Adversarial: null, empty, 10k, Unicode, SQL.
-- **Architecture**: plan first. Design for 10x/100x.
+- **Verification**: run full 6-phase Verification Loop (Build → TypeCheck → Lint → Tests → Security → Diff). ALL must pass.
+- **Code**: remove dead code/duplicates/unused. Beginner-readable. No magic values. Immutable data patterns. Functions <50 lines. Files <400 lines. No nesting >4 levels.
+- **Security**: apply `docs/security-playbook.md`. Reference rule IDs (AUTH-02, INJ-01). Pre-Commit Checklist §22. If security issue found — STOP, fix CRITICAL issues, rotate exposed secrets, review codebase for similar issues.
+- **Tests**: run all. Worst-case + best-case. Adversarial: null, empty, 10k, Unicode, SQL. 80%+ coverage target.
+- **Architecture**: plan first. Design for 10x/100x. Dispatch `architect` agent for system-level decisions.
 - **Design**: run AI Slop Detection Checklist. Production-grade only. Research real products first. Use design skills. Invoke `design-auditor` on every UI component.
 - **UX**: test interactions. Mobile-first. WCAG 2.1 AA. Skeletons > spinners. Error boundaries. Keyboard nav. Screen reader. Focus management. Touch targets 44px+. Run `ux-heuristics`.
 - **Aesthetics**: typography hierarchy. Spacing rhythm. Color with purpose. Depth with restraint. "Would a Creative Director sign off?"
+- **Search Audit**: did we check for existing packages/tools before writing custom code? Could we have Adopted instead of Built?
 
 ## Warnings
 - Never `node-appwrite` in `"use client"` · Never create UI primitives manually · `lib/env.ts` not `process.env` · `redirect()` OUTSIDE try/catch · Serialise Appwrite dates · `error.tsx` must be `"use client"` · All payment keys server-only · TNG: STRING cents, `U` ≠ failed · Semantic tokens only · Use Appwrite MCP for DB exploration, SDK for app code
 
 ## Docs
+- **@docs/AGENTS.md** — multi-agent orchestration, dispatch rules, handoff format, search-first protocol
 - **@docs/ARCHITECTURE.md** — system design, data flow, MCP integration points
-- **@docs/CONVENTIONS.md** — naming, RSC, shadcn, payments
+- **@docs/CONVENTIONS.md** — naming, RSC, shadcn, payments, code quality invariants, design standards
 - **@docs/security-playbook.md** — 22 sections, 100+ rules (AUTH/INJ/AUTHZ/PAY/AW), master checklists
 - **@docs/SECURITY.md** — 24-rule quick-ref with playbook cross-refs
 - **@docs/PAYMENTS.md** — Stripe, PayPal, TNG full API reference
@@ -260,4 +287,4 @@ Server Components → reads (node-appwrite or Appwrite MCP) · Server Actions �
 **Design (INVOKE ON ALL UI WORK)**: frontend-design, top-design, refactoring-ui, design-auditor, web-design-guidelines, implement-design, create-design-system-rules, shadcn, microinteractions, ux-heuristics, design-everyday-things, web-typography, ios-hig-design, canvas-design · Next.js: next-best-practices, next-cache-components, next-upgrade · React: vercel-react-best-practices, vercel-composition-patterns · Security: owasp-security, vibesec-skill, sanitize, ffuf-web-fuzzing · Payments: stripe-best-practices · Deploy: deploy-to-vercel · Research: firecrawl suite · Testing: webapp-testing, agent-browser · Data: database-schema-designer · Plugins: design, brand-voice
 
 ## Compaction
-Preserve: modified files list, failing tests, branch + task context, `tasks/todo.md` + `tasks/gotchas.md` contents, active Appwrite collections
+Preserve: modified files list, failing tests, branch + task context, `tasks/todo.md` + `tasks/gotchas.md` contents, active Appwrite collections, current agent orchestration chain state
