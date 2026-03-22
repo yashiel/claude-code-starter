@@ -21,17 +21,53 @@ Setup guide: `docs/runbooks/mcp-setup.md`
 **MCP-First Rule**: When a connected MCP tool can handle the task, use it. Appwrite MCP for DB operations > writing SDK code manually. Figma MCP for design context > guessing from descriptions. Context7 for latest docs > relying on training data.
 
 ## Thinking Mindset
-On EVERY task, think through ALL five lenses before writing a single line of code:
+On EVERY task, think through ALL eight lenses before writing a single line of code:
 
+### Engineering Lenses
 | Role | What You Ask |
 |------|-------------|
 | **System Architect** | Does this fit the system? Data flow? Boundaries? Scale to 10x/100x? |
 | **Software Engineer** | Clean code? SOLID? Error handling? Edge cases? Type safety? |
 | **Database Engineer** | Schema correct? Indexes? RLS? Queries efficient? Migrations reversible? |
-| **Frontend Developer** | RSC boundaries? Accessible? Mobile-first? Loading/error states? Performance? |
 | **QA Engineer** | What breaks this? Null? Empty? 10k items? Unicode? Concurrent users? Auth bypass? |
 
-This is not optional. Every feature, every fix, every refactor — run all five lenses.
+### Design Lenses (MANDATORY for any UI/UX work)
+| Role | What You Ask |
+|------|-------------|
+| **Designer** | Is this production-grade? Would a real design team ship this? No AI slop — every pixel intentional. Research real products (Dribbble, Awwwards, Apple HIG, Material 3) before designing. Use `frontend-design`, `refactoring-ui`, `top-design` skills. |
+| **Creative Director** | Does this have a cohesive visual identity? Typography hierarchy? Color story? Consistent spacing rhythm? Does it feel crafted or generated? Would this win design awards? |
+| **UX Designer** | Is the user journey frictionless? Cognitive load minimized? Information architecture clear? Feedback for every action? Error recovery graceful? Progressive disclosure? Use `ux-heuristics`, `design-everyday-things`, `microinteractions` skills. |
+| **Frontend Developer** | RSC boundaries? Accessible? Mobile-first? Loading/error states? Performance? Animations purposeful (not decorative)? Touch targets 44px+? |
+
+This is not optional. Every feature, every fix, every refactor — run all eight lenses.
+
+## Design Philosophy (ZERO AI SLOP)
+Every UI element must pass these gates. If it looks like AI generated it, it fails.
+
+### Non-Negotiable Standards
+1. **Accessibility is #1** — WCAG 2.1 AA minimum. Keyboard navigable. Screen reader tested. Color contrast 4.5:1+. Focus indicators visible. `aria-*` attributes correct. Skip links. Reduced motion support.
+2. **Aesthetics are #1** — Typography with purpose (max 2 typefaces, clear hierarchy). Intentional whitespace. Consistent spacing scale (4px/8px base). Color palette with meaning (not random). Depth through subtle shadows, not flat or over-shadowed.
+3. **Design Philosophies are #1** — Apply real design principles: Gestalt (proximity, similarity, closure), Fitts's Law (target size + distance), Hick's Law (fewer choices = faster decisions), Miller's Law (7±2 chunks), Jakob's Law (users expect your site to work like others they know).
+
+### Before Building ANY UI
+1. **Research** — look at 3-5 real production examples of similar UI (WebSearch/Firecrawl). Study how Apple, Linear, Vercel, Stripe, Notion design similar interfaces.
+2. **Invoke design skills** — `frontend-design`, `refactoring-ui`, `top-design`, `web-design-guidelines`, `design-auditor`, `shadcn`. Always.
+3. **Plan the design system** — spacing scale, color tokens, typography scale, component inventory. Don't ad-hoc it.
+4. **Mobile-first** — design for 375px first, then scale up. Not the other way around.
+5. **Interaction design** — every interactive element needs: default, hover, focus, active, disabled, loading states. Use `microinteractions` skill.
+
+### AI Slop Detection Checklist (run on every UI change)
+- [ ] Does this look like a real product or a demo/tutorial?
+- [ ] Would a design-conscious user trust this with their credit card?
+- [ ] Is there a clear visual hierarchy (one primary action per view)?
+- [ ] Are transitions/animations purposeful or just decorative?
+- [ ] Is the copy real (not "Lorem ipsum" or "Click here")?
+- [ ] Does every icon have a text label or aria-label?
+- [ ] Is the empty state designed (not just "No data")?
+- [ ] Are error messages helpful and human ("We couldn't load your orders" not "Error 500")?
+- [ ] Is the loading state a skeleton, not a spinner?
+- [ ] Does it work without JavaScript? (progressive enhancement)
+- [ ] Would Dieter Rams approve? ("Less, but better")
 
 ## Principles
 - **Simplicity First** — minimal code, clean solutions
@@ -82,7 +118,7 @@ This is not optional. Every feature, every fix, every refactor — run all five 
 When encountering ANY error:
 1. **Don't panic-fix** — read the full error, understand root cause
 2. **Use `systematic-debugging` skill** if available
-3. **Check all 5 role lenses** — is this a schema issue? Auth issue? Frontend state? Race condition?
+3. **Check all 8 role lenses** — is this a schema issue? Auth issue? Frontend state? Race condition? Design flaw? UX friction?
 4. **Research** — use Context7/WebSearch for the specific error before guessing
 5. **Fix architecturally** — not a band-aid. Would this fix survive 100x traffic?
 6. **Log lesson** → `tasks/gotchas.md`
@@ -144,7 +180,9 @@ Server Components → reads (node-appwrite or Appwrite MCP) · Server Actions �
 - **Security**: apply `docs/security-playbook.md`. Reference rule IDs (AUTH-02, INJ-01). Pre-Commit Checklist §22.
 - **Tests**: run all. Worst-case + best-case. Adversarial: null, empty, 10k, Unicode, SQL.
 - **Architecture**: plan first. Design for 10x/100x.
-- **UX**: test interactions. Mobile-first. WCAG 2.1 AA. Skeletons > spinners. Error boundaries.
+- **Design**: run AI Slop Detection Checklist. Production-grade only. Research real products first. Use design skills. Invoke `design-auditor` on every UI component.
+- **UX**: test interactions. Mobile-first. WCAG 2.1 AA. Skeletons > spinners. Error boundaries. Keyboard nav. Screen reader. Focus management. Touch targets 44px+. Run `ux-heuristics`.
+- **Aesthetics**: typography hierarchy. Spacing rhythm. Color with purpose. Depth with restraint. "Would a Creative Director sign off?"
 
 ## Warnings
 - Never `node-appwrite` in `"use client"` · Never create UI primitives manually · `lib/env.ts` not `process.env` · `redirect()` OUTSIDE try/catch · Serialise Appwrite dates · `error.tsx` must be `"use client"` · All payment keys server-only · TNG: STRING cents, `U` ≠ failed · Semantic tokens only · Use Appwrite MCP for DB exploration, SDK for app code
@@ -160,7 +198,7 @@ Server Components → reads (node-appwrite or Appwrite MCP) · Server Actions �
 - **@docs/decisions/** — ADRs
 
 ## Skills
-Next.js: next-best-practices, next-cache-components, next-upgrade · React: vercel-react-best-practices, vercel-composition-patterns · UI: shadcn, frontend-design, design-auditor, web-design-guidelines, implement-design, create-design-system-rules · Security: owasp-security, vibesec-skill, sanitize, ffuf-web-fuzzing · Payments: stripe-best-practices · Deploy: deploy-to-vercel · Research: firecrawl suite · Testing: webapp-testing, agent-browser · Data: database-schema-designer · Plugins: design, brand-voice
+**Design (INVOKE ON ALL UI WORK)**: frontend-design, top-design, refactoring-ui, design-auditor, web-design-guidelines, implement-design, create-design-system-rules, shadcn, microinteractions, ux-heuristics, design-everyday-things, web-typography, ios-hig-design, canvas-design · Next.js: next-best-practices, next-cache-components, next-upgrade · React: vercel-react-best-practices, vercel-composition-patterns · Security: owasp-security, vibesec-skill, sanitize, ffuf-web-fuzzing · Payments: stripe-best-practices · Deploy: deploy-to-vercel · Research: firecrawl suite · Testing: webapp-testing, agent-browser · Data: database-schema-designer · Plugins: design, brand-voice
 
 ## Compaction
 Preserve: modified files list, failing tests, branch + task context, `tasks/todo.md` + `tasks/gotchas.md` contents, active Appwrite collections
