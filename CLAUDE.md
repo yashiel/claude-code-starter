@@ -20,6 +20,19 @@ Setup guide: `docs/runbooks/mcp-setup.md`
 
 **MCP-First Rule**: When a connected MCP tool can handle the task, use it. Appwrite MCP for DB operations > writing SDK code manually. Figma MCP for design context > guessing from descriptions. Context7 for latest docs > relying on training data.
 
+## Thinking Mindset
+On EVERY task, think through ALL five lenses before writing a single line of code:
+
+| Role | What You Ask |
+|------|-------------|
+| **System Architect** | Does this fit the system? Data flow? Boundaries? Scale to 10x/100x? |
+| **Software Engineer** | Clean code? SOLID? Error handling? Edge cases? Type safety? |
+| **Database Engineer** | Schema correct? Indexes? RLS? Queries efficient? Migrations reversible? |
+| **Frontend Developer** | RSC boundaries? Accessible? Mobile-first? Loading/error states? Performance? |
+| **QA Engineer** | What breaks this? Null? Empty? 10k items? Unicode? Concurrent users? Auth bypass? |
+
+This is not optional. Every feature, every fix, every refactor — run all five lenses.
+
 ## Principles
 - **Simplicity First** — minimal code, clean solutions
 - **No Lazy Fixes** — root cause, not symptoms. Senior standards.
@@ -27,25 +40,63 @@ Setup guide: `docs/runbooks/mcp-setup.md`
 - **Systems > Prompts** — build reusable skills/hooks/utils
 - **Verification > Generation** — proving > writing
 - **Iteration > Perfection** — ship, learn, update `tasks/gotchas.md`
+- **Plan Before Code** — ALWAYS enter planning mode first. No exceptions. Think architecturally.
+- **Skills Are Mandatory** — if a skill exists for the task, USE IT. No rationalising skips.
+- **Research First** — use Context7, WebSearch, Firecrawl, and MCP docs to get current information. Never rely on stale training data when live docs exist.
+- **Memory Is Continuous** — update `MEMORY.md` at end of every session. Next session starts by reading it.
 
 ## Workflow
-1. **Plan Mode** — plan ANY 3+ step task. STOP and re-plan if sideways. Write specs upfront.
-2. **Subagents** — split research/execution/analysis. One task per agent.
-3. **Self-Improvement** — log mistakes → `tasks/gotchas.md` → convert to rules → review at session start.
-4. **Verify Before Done** — never mark done without proof. "Would a staff engineer approve this?"
-5. **Demand Elegance** — non-trivial: "is there a cleaner way?" Simple: don't over-engineer.
-6. **Autonomous Bugs** — just fix it. Root cause, not symptoms. No hand-holding.
-7. **Skills = System Layer** — code + scripts + data, not just markdown.
-8. **File System = Context** — `references/`, `scripts/`, `templates/` for progressive disclosure.
-9. **Don't Over-Constrain** — context > control. Flexibility > rigid steps.
+1. **Plan Mode ALWAYS** — plan ANY 2+ step task. Enter `EnterPlanMode` before touching code. STOP and re-plan if sideways. Write specs upfront. Think architecturally through all 5 role lenses.
+2. **Research Before Building** — use Context7/WebSearch/Firecrawl to read latest docs, APIs, and patterns BEFORE implementing. Never guess when you can look it up.
+3. **Skills First** — check available skills before ANY action. If a skill applies (even 1% chance), invoke it. Use `brainstorm` skill before creative work. Use `plan` skill for planning. Use domain skills (shadcn, next-best-practices, owasp-security, etc.) for implementation.
+4. **Subagents** — split research/execution/analysis. One task per agent. Parallelise independent work.
+5. **Self-Improvement** — log mistakes → `tasks/gotchas.md` → convert to rules → review at session start.
+6. **Verify Before Done** — never mark done without proof. Run tests, check types, lint. "Would a staff engineer approve this?"
+7. **Demand Elegance** — non-trivial: "is there a cleaner way?" Simple: don't over-engineer.
+8. **Autonomous Bugs** — just fix it. Root cause, not symptoms. No hand-holding. Use `systematic-debugging` skill.
+9. **Skills = System Layer** — code + scripts + data, not just markdown.
+10. **File System = Context** — `references/`, `scripts/`, `templates/` for progressive disclosure.
+11. **Don't Over-Constrain** — context > control. Flexibility > rigid steps.
+12. **Memory Discipline** — update memory at session end. Read memory at session start. Context must survive across sessions.
+
+## Session Protocol
+
+### Session Start (MANDATORY)
+1. Read `MEMORY.md` — recall what was done in previous sessions
+2. Read `tasks/todo.md` — check pending work
+3. Read `tasks/gotchas.md` — avoid repeating mistakes
+4. Run `/catchup` skill if available
+5. Announce context: "Resuming from [last session summary]. Pending: [items]."
+
+### Session End (MANDATORY)
+1. Update `tasks/todo.md` — mark completed, add new items
+2. Update `tasks/gotchas.md` — capture any lessons learned
+3. Update `MEMORY.md` — write session summary with:
+   - What was built/changed (files, features, fixes)
+   - Decisions made and why
+   - What's next / blockers
+   - Any architectural context future sessions need
+4. Commit memory updates
+
+### Error Handling Protocol
+When encountering ANY error:
+1. **Don't panic-fix** — read the full error, understand root cause
+2. **Use `systematic-debugging` skill** if available
+3. **Check all 5 role lenses** — is this a schema issue? Auth issue? Frontend state? Race condition?
+4. **Research** — use Context7/WebSearch for the specific error before guessing
+5. **Fix architecturally** — not a band-aid. Would this fix survive 100x traffic?
+6. **Log lesson** → `tasks/gotchas.md`
 
 ## Task Flow
-1. Plan → `tasks/todo.md` with checkable items
-2. Verify plan before coding
-3. Track progress as you go
-4. Explain changes at each step
-5. Document results in `tasks/todo.md`
-6. Capture lessons → `tasks/gotchas.md`
+1. **Research** — read relevant docs (Context7, web, MCP docs) before planning
+2. **Plan** → `tasks/todo.md` with checkable items. Use `EnterPlanMode`. Think through all 5 lenses.
+3. **Invoke Skills** — load all applicable skills before implementation
+4. Verify plan before coding
+5. Track progress as you go (TodoWrite)
+6. Explain changes at each step
+7. Document results in `tasks/todo.md`
+8. Capture lessons → `tasks/gotchas.md`
+9. **Update `MEMORY.md`** — session summary for continuity
 
 ## Commands
 ```bash
