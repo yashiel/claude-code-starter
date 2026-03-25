@@ -7,13 +7,12 @@
 
 **Date**: 2026-03-25
 **What was done**:
-- Added Persona Protocol — all 8 roles run as structured checklist before any code
-- Added Auto-Skill Loading matrix — skills auto-load based on task type, never skipped
-- Added Memory System documentation — what gets remembered, when, where, how
-- Updated plan skill to 8-lens with persona checklist
-- Updated feature command to include persona protocol + memory updates
-- Updated CLAUDE.md with Persona Protocol, Auto-Skill Loading, Memory System sections
-- Rewrote MEMORY.md as proper template with clear structure
+- Added Persona Protocol, Auto-Skill Loading matrix, Memory System
+- Added Diagram System — 7 Mermaid diagrams in `docs/diagrams/` (ERD, class, deployment, use-case, sequence, activity, state-machine) with auto-update rules
+- Optimized CLAUDE.md for token efficiency — removed redundancy, compressed tables
+- Created diagram templates with working Mermaid (auth flow, payment flow, deployment, payment state machine)
+- Updated ARCHITECTURE.md with diagram index and maintenance rules
+- Updated Quality Gate to include diagram checks
 
 **Decisions made**:
 - Personas run on EVERY task — not optional, not skippable
@@ -47,6 +46,7 @@
 | 6-phase verification loop mandatory | Build → TypeCheck → Lint → Tests → Security → Diff — no "done" without all passing | 2026-03-22 |
 | Auto-skill loading by task type | Eliminates "I forgot to load the skill" — matrix maps task → skills automatically | 2026-03-25 |
 | Memory updates at session end + significant events | Context must survive sessions; gotchas prevent repeated mistakes | 2026-03-22 |
+| 7 Mermaid diagrams maintained in docs/diagrams/ | Architecture must be visual and current; diagrams update with code changes | 2026-03-25 |
 
 ## Active Context
 
@@ -60,5 +60,5 @@
 
 | Date | Summary |
 |------|---------|
-| 2026-03-25 | Added Persona Protocol, Auto-Skill Loading matrix, Memory System docs, updated plan/feature commands |
+| 2026-03-25 | Persona Protocol, Auto-Skill Loading, Memory System, Diagram System (7 Mermaid diagrams), CLAUDE.md token optimization |
 | 2026-03-22 | Initial repo, 8-role thinking, Design Philosophy, dual-repo publishing, multi-agent orchestration (from ECC), search-first, verification loop, immutability, hooks-over-prompts, AGENTS.md, README rewrite |

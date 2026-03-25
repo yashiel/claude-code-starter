@@ -70,5 +70,36 @@ Appwrite Sites: CLI deploy, SSR adapter, console env vars.
 Heroku/Railway: git-push deploys from `-app` repo, Procfile if needed.
 CI: Push → Lint → TSC → Test → Build → Deploy (preview) → Merge → Deploy (prod)
 
+## Diagrams (in `docs/diagrams/`, Mermaid format)
+
+All diagrams MUST be kept current. When you change architecture, update affected diagrams.
+
+| Diagram | File | Purpose | Update When |
+|---------|------|---------|-------------|
+| **ERD** | `diagrams/erd.md` | Entity relationships, Appwrite collections, attributes, cardinality | Any collection/attribute/relationship change |
+| **Class** | `diagrams/class.md` | Services, models, interfaces, inheritance, dependencies | New service/model, major refactor |
+| **Deployment** | `diagrams/deployment.md` | Infrastructure: Vercel, Appwrite Cloud, CDN, env separation | Provider, env, or infra change |
+| **Use Case** | `diagrams/use-cases.md` | Actors (user, admin, system) and their interactions | New feature or user-facing flow |
+| **Sequence** | `diagrams/sequences.md` | Auth flow, payment flows, API request lifecycle | New API/auth/payment flow |
+| **Activity** | `diagrams/activities.md` | Business processes: checkout, onboarding, order lifecycle | New workflow or process change |
+| **State Machine** | `diagrams/state-machines.md` | Stateful entities: order status, payment status, subscription | New stateful entity or status change |
+
+### Diagram Format
+Each file contains one or more Mermaid diagrams with a title and description:
+```markdown
+## [Diagram Name]
+> [One-line description of what this shows]
+
+```mermaid
+[diagram code]
+```
+
+### Maintenance Rules
+1. Create diagrams when the feature is FIRST built — not retroactively
+2. Update ALL affected diagrams in the SAME commit as the code change
+3. ERD and Sequence diagrams are highest priority — always current
+4. Use Figma MCP `generate_diagram` for visual FigJam versions when needed
+5. Reference diagram changes in `MEMORY.md` when architecture shifts
+
 ## Key Decisions
 Appwrite > custom backend (BaaS) · shadcn > library (source ownership) · Server Components first (no waterfalls) · TanStack Query only when needed · Stripe Checkout (simplest PCI) · MCP for development workflow, SDK for application code · Dual-repo (full context + clean deploy) · See `docs/decisions/`

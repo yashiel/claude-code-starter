@@ -119,16 +119,9 @@ Every task must pass all 6 phases before claiming "done":
 **Output**: Structured VERIFICATION REPORT — READY or NOT READY with specific failures listed.
 **Rule**: If ANY phase fails, the task is NOT done. Fix and re-verify. No exceptions.
 
-## Persona Protocol (runs on EVERY task — no exceptions)
+## Persona Protocol (runs on EVERY task)
 
-Before writing ANY code, run ALL 8 personas as a structured review:
-
-### How Personas Run
-1. **State the task** in one sentence
-2. **Run each persona** — ask its questions, write brief answers
-3. **Identify conflicts** between personas (e.g., Architect wants abstraction, QA wants simplicity)
-4. **Resolve conflicts** — document the trade-off decision
-5. **Only then** proceed to implementation
+Before writing ANY code: state task → run all 8 personas → identify conflicts → resolve → proceed.
 
 ### Persona Checklist (copy into every plan)
 - [ ] **System Architect** — fits system? data flow? boundaries? scale 10x/100x?
@@ -140,137 +133,86 @@ Before writing ANY code, run ALL 8 personas as a structured review:
 - [ ] **UX Designer** — frictionless journey? cognitive load? feedback? error recovery? progressive disclosure?
 - [ ] **Frontend Developer** — RSC boundaries? accessible? mobile-first? all states? performance?
 
-### When Each Persona Speaks Loudest
-| Task Type | Primary Personas | Secondary |
-|-----------|-----------------|-----------|
-| New feature | Architect, Engineer, QA | All others |
-| UI component | Designer, Creative Director, UX, Frontend | QA |
+### Persona Priority by Task
+| Task | Primary | Secondary |
+|------|---------|-----------|
+| Feature | Architect, Engineer, QA | All |
+| UI | Designer, Creative Dir, UX, Frontend | QA |
 | Bug fix | QA, Engineer | Architect |
-| Database change | DB Engineer, Architect | QA, Security |
-| API endpoint | Architect, Engineer, QA | Security |
+| DB change | DB Engineer, Architect | QA |
+| API | Architect, Engineer, QA | Security |
 | Refactor | Architect, Engineer | QA |
 
 ## Auto-Skill Loading (MANDATORY)
 
-Skills are loaded AUTOMATICALLY based on task type. Never skip. Never rationalise skipping.
+Skills load AUTOMATICALLY by task type. Never skip.
 
-### Skill Loading Matrix
-| When You're Asked To... | Auto-Load These Skills |
-|------------------------|----------------------|
-| Build ANY UI | `frontend-design`, `refactoring-ui`, `shadcn`, `ux-heuristics`, `microinteractions`, `web-design-guidelines`, `design-auditor` |
-| Build a page/layout | Above + `top-design`, `web-typography`, `design-everyday-things` |
-| Plan anything | `plan`, `brainstorm` |
-| Fix a bug | `systematic-debugging`, `fix` |
-| Review code | `review`, `clean-code` |
-| Touch auth/security | `owasp-security`, `vibesec-skill` |
-| Touch payments | `stripe-best-practices` + `docs/PAYMENTS.md` |
-| Touch database | `database-schema-designer` + `docs/security-playbook.md` §10 |
-| Write React | `vercel-react-best-practices`, `vercel-composition-patterns` |
-| Write Next.js | `next-best-practices`, `next-cache-components` |
-| Use shadcn | `shadcn` (always run `docs` command first) |
-| Use Figma designs | `implement-design`, `create-design-system-rules` |
+| Task | Skills |
+|------|--------|
+| ANY UI | `frontend-design`, `refactoring-ui`, `shadcn`, `ux-heuristics`, `microinteractions`, `web-design-guidelines`, `design-auditor` |
+| Page/layout | Above + `top-design`, `web-typography`, `design-everyday-things` |
+| Planning | `plan`, `brainstorm` |
+| Bug fix | `systematic-debugging`, `fix` |
+| Code review | `review`, `clean-code` |
+| Auth/security | `owasp-security`, `vibesec-skill` |
+| Payments | `stripe-best-practices` + `docs/PAYMENTS.md` |
+| Database | `database-schema-designer` + `docs/security-playbook.md` §10 |
+| React | `vercel-react-best-practices`, `vercel-composition-patterns` |
+| Next.js | `next-best-practices`, `next-cache-components` |
+| shadcn | `shadcn` (run `docs` first) |
+| Figma | `implement-design`, `create-design-system-rules` |
 | Deploy | `deploy-to-vercel` |
-| Write tests | `webapp-testing`, `agent-browser` |
-| Research/scrape | `firecrawl-search`, `firecrawl-scrape`, `firecrawl-crawl` |
-| Create content | `brand-voice` |
+| Tests | `webapp-testing`, `agent-browser` |
+| Research | `firecrawl-search`, `firecrawl-scrape`, `firecrawl-crawl` |
+| Content | `brand-voice` |
 
-### Skill Loading Rules
-1. **Check available skills BEFORE responding** — even for clarifying questions
-2. **If there's even a 1% chance** a skill applies, load it
-3. **Multiple skills can apply** — load ALL relevant ones
-4. **Skills are not optional** — they are system-level requirements
-5. **Never say "I'll skip the skill because..."** — that thought means STOP and load it
-6. **Design skills are ALWAYS loaded for UI work** — no exceptions, no "this is just a small change"
+**Rules**: 1% chance = load it. Multiple apply = load ALL. Design skills ALWAYS for UI. No rationalising skips.
 
 ## Memory System
 
-### What Gets Remembered
-Everything that matters for future sessions:
+**Session start**: read `MEMORY.md` → `tasks/todo.md` → `tasks/gotchas.md` → announce context.
+**Session end**: update all three → commit.
+**During**: update `tasks/todo.md` on completion, `tasks/gotchas.md` on mistakes, `MEMORY.md` on decisions.
 
-| Category | Examples | Where It Goes |
-|----------|---------|---------------|
-| **What was built** | Features, components, pages, APIs created | `MEMORY.md` → Latest Session |
-| **Decisions made** | Why X over Y, architectural trade-offs | `MEMORY.md` → Decisions |
-| **Lessons learned** | Mistakes, gotchas, things that broke | `tasks/gotchas.md` |
-| **Current state** | Branch, what's working, what's pending | `MEMORY.md` → Project State |
-| **What's next** | Pending work, blockers, follow-ups | `MEMORY.md` → What's Next |
-| **Task progress** | Checkboxes, completed/pending items | `tasks/todo.md` |
+| What | Where |
+|------|-------|
+| Features built, changes | `MEMORY.md` → Latest Session |
+| Why X over Y | `MEMORY.md` → Architecture Decisions |
+| Mistakes, gotchas | `tasks/gotchas.md` |
+| Branch, state, issues | `MEMORY.md` → Active Context |
+| Pending work | `tasks/todo.md` |
 
-### Memory Update Triggers
-Memory is updated when:
-- A feature is completed
-- A significant decision is made
-- A bug is fixed (and lesson learned)
-- Architecture changes
-- Session ends (MANDATORY — non-negotiable)
-- A new pattern or gotcha is discovered
+## Diagrams (MANDATORY — maintain in `docs/diagrams/`)
 
-### MEMORY.md Structure
-```markdown
-# Project Memory
-> Updated: [date]. Read this FIRST at session start.
+All diagrams use Mermaid format. Store in `docs/diagrams/`. Update when architecture changes.
 
-## Latest Session
-- Date, what was done, decisions, state, what's next
+| Diagram | File | When to Update |
+|---------|------|---------------|
+| ERD | `erd.md` | Any collection/table/relationship change |
+| Class | `class.md` | New service, model, or major refactor |
+| Deployment | `deployment.md` | Infrastructure, env, or provider change |
+| Use Case | `use-cases.md` | New user-facing feature or actor |
+| Sequence | `sequences.md` | New API flow, auth flow, or payment flow |
+| Activity | `activities.md` | New business process or workflow |
+| State Machine | `state-machines.md` | New stateful entity (order, payment, subscription) |
 
-## Architecture Decisions
-- Key decisions that affect future work
+**Rules**:
+1. Create diagrams when the feature is first built
+2. Update ALL affected diagrams when making changes — not optional
+3. Use Figma MCP `generate_diagram` for visual versions in FigJam when available
+4. ERD and Sequence diagrams are the most critical — always keep current
+5. Reference diagrams in `MEMORY.md` when architecture changes
 
-## Active Context
-- Current branch, feature in progress, known issues
-
-## Session History
-- Date → one-line summary table
-```
-
-### Memory Rules
-1. **Session start**: ALWAYS read `MEMORY.md` → `tasks/todo.md` → `tasks/gotchas.md`
-2. **Session end**: ALWAYS update all three files
-3. **During session**: update `tasks/todo.md` as items complete
-4. **After mistakes**: immediately add to `tasks/gotchas.md`
-5. **After decisions**: add to `MEMORY.md` → Architecture Decisions
-6. **Keep concise**: summaries not essays. Future-you needs facts, not prose.
-7. **Never delete history**: append to Session History, update Latest Session
-
-## Session Protocol
-
-### Session Start (MANDATORY)
-1. Read `MEMORY.md` — recall what was done in previous sessions
-2. Read `tasks/todo.md` — check pending work
-3. Read `tasks/gotchas.md` — avoid repeating mistakes
-4. Run `/catchup` skill if available
-5. Announce context: "Resuming from [last session summary]. Pending: [items]."
-
-### Session End (MANDATORY)
-1. Update `tasks/todo.md` — mark completed, add new items
-2. Update `tasks/gotchas.md` — capture any lessons learned
-3. Update `MEMORY.md` — write session summary with:
-   - What was built/changed (files, features, fixes)
-   - Decisions made and why
-   - What's next / blockers
-   - Any architectural context future sessions need
-4. Commit memory updates
-
-### Error Handling Protocol
-When encountering ANY error:
-1. **Don't panic-fix** — read the full error, understand root cause
-2. **Use `systematic-debugging` skill** if available
-3. **Check all 8 role lenses** — is this a schema issue? Auth issue? Frontend state? Race condition? Design flaw? UX friction?
-4. **Research** — use Context7/WebSearch for the specific error before guessing
-5. **Fix architecturally** — not a band-aid. Would this fix survive 100x traffic?
-6. **Log lesson** → `tasks/gotchas.md`
+## Error Handling Protocol
+1. Don't panic-fix — read full error, understand root cause
+2. Use `systematic-debugging` skill
+3. Check all 8 lenses — schema? auth? frontend state? race condition? design? UX?
+4. Research via Context7/WebSearch before guessing
+5. Fix architecturally — would this survive 100x traffic?
+6. Log lesson → `tasks/gotchas.md`
 
 ## Task Flow
-1. **Run Personas** — all 8 lenses on the task (see Persona Protocol above)
-2. **Auto-Load Skills** — check skill matrix, load all applicable (see Auto-Skill Loading above)
-3. **Research** — read relevant docs (Context7, web, MCP docs) before planning
-4. **Plan** → `tasks/todo.md` with checkable items. Use `EnterPlanMode`. Include persona checklist.
-5. Verify plan before coding
-6. Track progress as you go (TodoWrite)
-7. Explain changes at each step
-8. Document results in `tasks/todo.md`
-9. Capture lessons → `tasks/gotchas.md`
-10. **Update `MEMORY.md`** — session summary for continuity
+1. Run Personas → Auto-Load Skills → Research → Plan (`tasks/todo.md`) → Verify plan → Build → Track (TodoWrite) → Verify (6-phase) → Lessons (`tasks/gotchas.md`) → Memory (`MEMORY.md`)
 
 ## Publishing Protocol (Dual-Repo Strategy)
 When asked to "publish to GitHub" or "push to GitHub", ALWAYS create TWO repositories:
@@ -355,6 +297,7 @@ tasks/             → todo.md, gotchas.md
 tools/scripts/     → automation scripts
 tools/prompts/     → reusable prompt templates
 docs/              → ARCHITECTURE, CONVENTIONS, SECURITY, PAYMENTS, security-playbook, decisions/, runbooks/
+docs/diagrams/     → ERD, class, deployment, use-case, sequence, activity, state-machine (Mermaid)
 ```
 
 ## Data Fetching
@@ -382,13 +325,14 @@ Server Components → reads (node-appwrite or Appwrite MCP) · Server Actions �
 - **UX**: test interactions. Mobile-first. WCAG 2.1 AA. Skeletons > spinners. Error boundaries. Keyboard nav. Screen reader. Focus management. Touch targets 44px+. Run `ux-heuristics`.
 - **Aesthetics**: typography hierarchy. Spacing rhythm. Color with purpose. Depth with restraint. "Would a Creative Director sign off?"
 - **Search Audit**: did we check for existing packages/tools before writing custom code? Could we have Adopted instead of Built?
+- **Diagrams**: did any architectural change affect diagrams in `docs/diagrams/`? Update them.
 
 ## Warnings
 - Never `node-appwrite` in `"use client"` · Never create UI primitives manually · `lib/env.ts` not `process.env` · `redirect()` OUTSIDE try/catch · Serialise Appwrite dates · `error.tsx` must be `"use client"` · All payment keys server-only · TNG: STRING cents, `U` ≠ failed · Semantic tokens only · Use Appwrite MCP for DB exploration, SDK for app code
 
 ## Docs
 - **@docs/AGENTS.md** — multi-agent orchestration, dispatch rules, handoff format, search-first protocol
-- **@docs/ARCHITECTURE.md** — system design, data flow, MCP integration points
+- **@docs/ARCHITECTURE.md** — system design, data flow, MCP integration points, diagram index
 - **@docs/CONVENTIONS.md** — naming, RSC, shadcn, payments, code quality invariants, design standards
 - **@docs/security-playbook.md** — 22 sections, 100+ rules (AUTH/INJ/AUTHZ/PAY/AW), master checklists
 - **@docs/SECURITY.md** — 24-rule quick-ref with playbook cross-refs
@@ -401,4 +345,4 @@ Server Components → reads (node-appwrite or Appwrite MCP) · Server Actions �
 **Design (INVOKE ON ALL UI WORK)**: frontend-design, top-design, refactoring-ui, design-auditor, web-design-guidelines, implement-design, create-design-system-rules, shadcn, microinteractions, ux-heuristics, design-everyday-things, web-typography, ios-hig-design, canvas-design · Next.js: next-best-practices, next-cache-components, next-upgrade · React: vercel-react-best-practices, vercel-composition-patterns · Security: owasp-security, vibesec-skill, sanitize, ffuf-web-fuzzing · Payments: stripe-best-practices · Deploy: deploy-to-vercel · Research: firecrawl suite · Testing: webapp-testing, agent-browser · Data: database-schema-designer · Plugins: design, brand-voice
 
 ## Compaction
-Preserve: modified files list, failing tests, branch + task context, `tasks/todo.md` + `tasks/gotchas.md` contents, active Appwrite collections, current agent orchestration chain state
+Preserve: modified files list, failing tests, branch + task context, `tasks/todo.md` + `tasks/gotchas.md` contents, active Appwrite collections, current agent orchestration chain state, diagram update status
