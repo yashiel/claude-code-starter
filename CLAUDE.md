@@ -119,6 +119,119 @@ Every task must pass all 6 phases before claiming "done":
 **Output**: Structured VERIFICATION REPORT — READY or NOT READY with specific failures listed.
 **Rule**: If ANY phase fails, the task is NOT done. Fix and re-verify. No exceptions.
 
+## Persona Protocol (runs on EVERY task — no exceptions)
+
+Before writing ANY code, run ALL 8 personas as a structured review:
+
+### How Personas Run
+1. **State the task** in one sentence
+2. **Run each persona** — ask its questions, write brief answers
+3. **Identify conflicts** between personas (e.g., Architect wants abstraction, QA wants simplicity)
+4. **Resolve conflicts** — document the trade-off decision
+5. **Only then** proceed to implementation
+
+### Persona Checklist (copy into every plan)
+- [ ] **System Architect** — fits system? data flow? boundaries? scale 10x/100x?
+- [ ] **Software Engineer** — clean? SOLID? error handling? edge cases? types?
+- [ ] **Database Engineer** — schema? indexes? RLS? queries? migrations reversible?
+- [ ] **QA Engineer** — what breaks? null? empty? 10k? unicode? concurrent? auth bypass?
+- [ ] **Designer** — production-grade? researched 3-5 real examples? no AI slop?
+- [ ] **Creative Director** — visual identity? typography hierarchy? color story? spacing rhythm?
+- [ ] **UX Designer** — frictionless journey? cognitive load? feedback? error recovery? progressive disclosure?
+- [ ] **Frontend Developer** — RSC boundaries? accessible? mobile-first? all states? performance?
+
+### When Each Persona Speaks Loudest
+| Task Type | Primary Personas | Secondary |
+|-----------|-----------------|-----------|
+| New feature | Architect, Engineer, QA | All others |
+| UI component | Designer, Creative Director, UX, Frontend | QA |
+| Bug fix | QA, Engineer | Architect |
+| Database change | DB Engineer, Architect | QA, Security |
+| API endpoint | Architect, Engineer, QA | Security |
+| Refactor | Architect, Engineer | QA |
+
+## Auto-Skill Loading (MANDATORY)
+
+Skills are loaded AUTOMATICALLY based on task type. Never skip. Never rationalise skipping.
+
+### Skill Loading Matrix
+| When You're Asked To... | Auto-Load These Skills |
+|------------------------|----------------------|
+| Build ANY UI | `frontend-design`, `refactoring-ui`, `shadcn`, `ux-heuristics`, `microinteractions`, `web-design-guidelines`, `design-auditor` |
+| Build a page/layout | Above + `top-design`, `web-typography`, `design-everyday-things` |
+| Plan anything | `plan`, `brainstorm` |
+| Fix a bug | `systematic-debugging`, `fix` |
+| Review code | `review`, `clean-code` |
+| Touch auth/security | `owasp-security`, `vibesec-skill` |
+| Touch payments | `stripe-best-practices` + `docs/PAYMENTS.md` |
+| Touch database | `database-schema-designer` + `docs/security-playbook.md` §10 |
+| Write React | `vercel-react-best-practices`, `vercel-composition-patterns` |
+| Write Next.js | `next-best-practices`, `next-cache-components` |
+| Use shadcn | `shadcn` (always run `docs` command first) |
+| Use Figma designs | `implement-design`, `create-design-system-rules` |
+| Deploy | `deploy-to-vercel` |
+| Write tests | `webapp-testing`, `agent-browser` |
+| Research/scrape | `firecrawl-search`, `firecrawl-scrape`, `firecrawl-crawl` |
+| Create content | `brand-voice` |
+
+### Skill Loading Rules
+1. **Check available skills BEFORE responding** — even for clarifying questions
+2. **If there's even a 1% chance** a skill applies, load it
+3. **Multiple skills can apply** — load ALL relevant ones
+4. **Skills are not optional** — they are system-level requirements
+5. **Never say "I'll skip the skill because..."** — that thought means STOP and load it
+6. **Design skills are ALWAYS loaded for UI work** — no exceptions, no "this is just a small change"
+
+## Memory System
+
+### What Gets Remembered
+Everything that matters for future sessions:
+
+| Category | Examples | Where It Goes |
+|----------|---------|---------------|
+| **What was built** | Features, components, pages, APIs created | `MEMORY.md` → Latest Session |
+| **Decisions made** | Why X over Y, architectural trade-offs | `MEMORY.md` → Decisions |
+| **Lessons learned** | Mistakes, gotchas, things that broke | `tasks/gotchas.md` |
+| **Current state** | Branch, what's working, what's pending | `MEMORY.md` → Project State |
+| **What's next** | Pending work, blockers, follow-ups | `MEMORY.md` → What's Next |
+| **Task progress** | Checkboxes, completed/pending items | `tasks/todo.md` |
+
+### Memory Update Triggers
+Memory is updated when:
+- A feature is completed
+- A significant decision is made
+- A bug is fixed (and lesson learned)
+- Architecture changes
+- Session ends (MANDATORY — non-negotiable)
+- A new pattern or gotcha is discovered
+
+### MEMORY.md Structure
+```markdown
+# Project Memory
+> Updated: [date]. Read this FIRST at session start.
+
+## Latest Session
+- Date, what was done, decisions, state, what's next
+
+## Architecture Decisions
+- Key decisions that affect future work
+
+## Active Context
+- Current branch, feature in progress, known issues
+
+## Session History
+- Date → one-line summary table
+```
+
+### Memory Rules
+1. **Session start**: ALWAYS read `MEMORY.md` → `tasks/todo.md` → `tasks/gotchas.md`
+2. **Session end**: ALWAYS update all three files
+3. **During session**: update `tasks/todo.md` as items complete
+4. **After mistakes**: immediately add to `tasks/gotchas.md`
+5. **After decisions**: add to `MEMORY.md` → Architecture Decisions
+6. **Keep concise**: summaries not essays. Future-you needs facts, not prose.
+7. **Never delete history**: append to Session History, update Latest Session
+
 ## Session Protocol
 
 ### Session Start (MANDATORY)
@@ -148,15 +261,16 @@ When encountering ANY error:
 6. **Log lesson** → `tasks/gotchas.md`
 
 ## Task Flow
-1. **Research** — read relevant docs (Context7, web, MCP docs) before planning
-2. **Plan** → `tasks/todo.md` with checkable items. Use `EnterPlanMode`. Think through all 8 lenses.
-3. **Invoke Skills** — load all applicable skills before implementation
-4. Verify plan before coding
-5. Track progress as you go (TodoWrite)
-6. Explain changes at each step
-7. Document results in `tasks/todo.md`
-8. Capture lessons → `tasks/gotchas.md`
-9. **Update `MEMORY.md`** — session summary for continuity
+1. **Run Personas** — all 8 lenses on the task (see Persona Protocol above)
+2. **Auto-Load Skills** — check skill matrix, load all applicable (see Auto-Skill Loading above)
+3. **Research** — read relevant docs (Context7, web, MCP docs) before planning
+4. **Plan** → `tasks/todo.md` with checkable items. Use `EnterPlanMode`. Include persona checklist.
+5. Verify plan before coding
+6. Track progress as you go (TodoWrite)
+7. Explain changes at each step
+8. Document results in `tasks/todo.md`
+9. Capture lessons → `tasks/gotchas.md`
+10. **Update `MEMORY.md`** — session summary for continuity
 
 ## Publishing Protocol (Dual-Repo Strategy)
 When asked to "publish to GitHub" or "push to GitHub", ALWAYS create TWO repositories:

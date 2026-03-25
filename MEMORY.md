@@ -1,46 +1,33 @@
 # Project Memory
 
-> Cross-session context log. Updated at the end of every session.
-> Read this FIRST when starting a new session.
+> Cross-session context. Read this FIRST at every session start. Updated at every session end.
+> This file is the bridge between sessions — without it, every session starts from zero.
 
 ## Latest Session
 
-**Date**: 2026-03-22
+**Date**: 2026-03-25
 **What was done**:
-- Created the project repository and published to GitHub as public repo
-- URL: https://github.com/yashiel/claude-code-starter
-- Updated CLAUDE.md with 8-role thinking mindset (System Architect, Software Engineer, DB Engineer, QA Engineer + Designer, Creative Director, UX Designer, Frontend Developer)
-- Added mandatory Session Protocol (start/end procedures)
-- Added Error Handling Protocol with architectural fix requirements
-- Enforced planning-first workflow, skills-first approach, research-before-building
-- Added Design Philosophy section — ZERO AI SLOP policy, accessibility-first, aesthetics-first
-- Added AI Slop Detection Checklist to Quality Gate
-- Added comprehensive Design Standards to CONVENTIONS.md (accessibility, typography, spacing, color, states, motion, design principles)
-- Added memory discipline to principles and workflow
-- Created this MEMORY.md for cross-session continuity
+- Added Persona Protocol — all 8 roles run as structured checklist before any code
+- Added Auto-Skill Loading matrix — skills auto-load based on task type, never skipped
+- Added Memory System documentation — what gets remembered, when, where, how
+- Updated plan skill to 8-lens with persona checklist
+- Updated feature command to include persona protocol + memory updates
+- Updated CLAUDE.md with Persona Protocol, Auto-Skill Loading, Memory System sections
+- Rewrote MEMORY.md as proper template with clear structure
 
 **Decisions made**:
-- All 8 lenses (4 engineering + 4 design) must be applied before any code change
-- Planning mode is mandatory for 2+ step tasks (lowered from 3)
-- Skills must be checked and invoked before any action — design skills MANDATORY for all UI work
-- Research real products (3-5 examples) before designing any interface
-- Accessibility is non-negotiable: WCAG 2.1 AA, keyboard nav, screen reader, 44px touch targets
-- No AI slop — every pixel intentional, production-grade, would-a-Creative-Director-approve standard
-- Dual-repo publishing: full project repo + deployable app-only repo when publishing to GitHub
-- Multi-agent orchestration: specialised agents dispatched by task type (feature/bugfix/refactor/UI chains)
-- Search-first protocol: Adopt > Extend > Compose > Build — always check existing before writing custom
-- 6-phase Verification Loop: Build → TypeCheck → Lint → Tests → Security → Diff — ALL must pass before done
-- Immutability principle: new objects, never mutate; pure functions over side effects
-- Hooks over prompts: deterministic enforcement via hooks > probabilistic LLM instructions
-- Observations evolve: gotcha (0.3) → pattern (0.6) → rule (0.9) — confidence-weighted learning
-- Memory updates are mandatory at session end
+- Personas run on EVERY task — not optional, not skippable
+- Skills auto-load by task type — UI tasks always load all design skills
+- Memory updates happen at session end AND on significant events (features completed, decisions made, bugs fixed)
+- MEMORY.md structure: Latest Session → Architecture Decisions → Active Context → Session History
 
 **Project state**:
 - Scaffold only — no application code yet
-- All docs in place: ARCHITECTURE, CONVENTIONS, SECURITY, PAYMENTS, security-playbook
-- Custom skills: catchup, plan, review
-- Custom commands: catchup, commit, feature, fix, pr
+- All docs in place: AGENTS, ARCHITECTURE, CONVENTIONS, SECURITY, PAYMENTS, security-playbook
+- Custom skills: catchup, plan (8-lens), review
+- Custom commands: catchup, commit, feature (persona-aware), fix, pr
 - Branch: `main`
+- Published: https://github.com/yashiel/claude-code-starter
 
 **What's next**:
 - User to define PROJECT_NAME and one-line description
@@ -49,8 +36,29 @@
 - Install and configure shadcn/ui
 - Begin feature development
 
+## Architecture Decisions
+
+| Decision | Why | Date |
+|----------|-----|------|
+| 8-role persona protocol on every task | Prevents tunnel vision — catches issues across system, code, DB, QA, design, UX, creative, frontend | 2026-03-22 |
+| Dual-repo publishing (full + app-only) | Cloud providers only need deployable code; dev context stays separate | 2026-03-22 |
+| Multi-agent orchestration by task type | Specialised agents > one-size-fits-all; dispatch chains prevent skipping quality steps | 2026-03-22 |
+| Search-first: Adopt > Extend > Compose > Build | Never reinvent what exists; reduces code, bugs, maintenance | 2026-03-22 |
+| 6-phase verification loop mandatory | Build → TypeCheck → Lint → Tests → Security → Diff — no "done" without all passing | 2026-03-22 |
+| Auto-skill loading by task type | Eliminates "I forgot to load the skill" — matrix maps task → skills automatically | 2026-03-25 |
+| Memory updates at session end + significant events | Context must survive sessions; gotchas prevent repeated mistakes | 2026-03-22 |
+
+## Active Context
+
+- **Branch**: `main`
+- **Feature in progress**: none (scaffold only)
+- **Known issues**: none
+- **Appwrite collections**: none yet
+- **Design system**: not yet initialized
+
 ## Session History
 
 | Date | Summary |
 |------|---------|
-| 2026-03-22 | Initial repo, 8-role thinking, Design Philosophy, dual-repo publishing, multi-agent orchestration (from ECC), search-first, verification loop, immutability, hooks-over-prompts, AGENTS.md |
+| 2026-03-25 | Added Persona Protocol, Auto-Skill Loading matrix, Memory System docs, updated plan/feature commands |
+| 2026-03-22 | Initial repo, 8-role thinking, Design Philosophy, dual-repo publishing, multi-agent orchestration (from ECC), search-first, verification loop, immutability, hooks-over-prompts, AGENTS.md, README rewrite |
