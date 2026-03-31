@@ -217,61 +217,12 @@ All diagrams use Mermaid format. Store in `docs/diagrams/`. Update when architec
 ## Publishing Protocol (Dual-Repo Strategy)
 When asked to "publish to GitHub" or "push to GitHub", ALWAYS create TWO repositories:
 
-### Repo 1: Full Project (source of truth)
-- **Name**: `{project-name}` (e.g. `my-saas-app`)
-- **Contains**: EVERYTHING — `CLAUDE.md`, `MEMORY.md`, `docs/`, `tasks/`, `tools/`, `.claude/`, `scripts/`, `src/`, config files, etc.
-- **Purpose**: Full development context. Claude Code workspace. Planning docs, gotchas, security playbook, ADRs — the entire knowledge base.
-- **Visibility**: Public or Private (user's choice)
+1. **`{project-name}`** — EVERYTHING (CLAUDE.md, docs/, tasks/, tools/, .claude/, src/, configs). Development workspace.
+2. **`{project-name}-app`** — Deployable only: `src/ public/ package.json package-lock.json tsconfig.json next.config.ts tailwind.config.ts postcss.config.mjs components.json .env.example .gitignore README.md`. Excludes all dev docs/tools.
 
-### Repo 2: Deployable App (production source)
-- **Name**: `{project-name}-app` (e.g. `my-saas-app-app`)
-- **Contains**: ONLY the deployable application — the Next.js project files that cloud providers need:
-  ```
-  src/                  → application source code
-  public/               → static assets
-  package.json          → dependencies
-  package-lock.json     → lockfile
-  tsconfig.json         → TypeScript config
-  next.config.ts        → Next.js config
-  tailwind.config.ts    → Tailwind config
-  postcss.config.mjs    → PostCSS config
-  components.json       → shadcn config
-  .env.example          → env template (NO secrets)
-  .gitignore            → standard Next.js ignores
-  README.md             → deployment & setup instructions only
-  ```
-- **Excludes**: `CLAUDE.md`, `MEMORY.md`, `docs/`, `tasks/`, `tools/`, `.claude/`, `scripts/`, `tests/` (unless CI needs them), any dev-only files
-- **Purpose**: Clean, deployable source. Connect to Vercel/Appwrite Sites/Heroku/Railway for auto-deploy.
-- **Visibility**: Matches Repo 1
-
-### How to Execute
-```bash
-# 1. Create full project repo (already has all files)
-gh repo create {project-name} --public --source=. --remote=origin --push
-
-# 2. Create deployable repo
-mkdir -p /tmp/{project-name}-app
-# Copy ONLY deployable files
-cp -r src/ public/ package.json package-lock.json tsconfig.json \
-      next.config.ts tailwind.config.ts postcss.config.mjs \
-      components.json .env.example .gitignore /tmp/{project-name}-app/
-# Write a deploy-focused README
-# Init git, commit, create repo, push
-cd /tmp/{project-name}-app
-git init && git add -A && git commit -m "Initial deployable release"
-gh repo create {project-name}-app --public --source=. --remote=origin --push
-```
-
-### Keeping Repos In Sync
-When the user makes changes to `src/` or config files in the full repo:
-- Remind user to sync to the app repo
-- Or set up a GitHub Action in the full repo that auto-copies deployable files to the app repo on push to `main`
-
-### Why Two Repos?
-- Cloud providers (Vercel, Appwrite Sites, Heroku) only need the app — no dev docs, no planning files, no security playbooks
-- Full repo stays as the development workspace with all context
-- App repo stays clean, minimal, fast to clone and deploy
-- Separation of concerns: development context vs production artifact
+**Execute**: `gh repo create {name} --public --source=. --push` for repo 1. Copy deployable files to `/tmp/{name}-app`, init git, create repo 2 with same command.
+**Sync**: Remind user or set up GitHub Action to auto-copy deployable files on push to main.
+**Why**: Cloud providers only need the app. Dev context stays separate.
 
 ## Commands
 ```bash
