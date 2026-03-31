@@ -195,22 +195,6 @@ Referrer-Policy: strict-origin-when-cross-origin
 Cache-Control: no-store
 Permissions-Policy: camera=(), microphone=(), geolocation=()
 
-## 19. Appwrite Security
-
-**Auth**: AW-AUTH-01 Argon2 hashing · AW-AUTH-02 Password history (20) · AW-AUTH-03 Dictionary check (10k) · AW-AUTH-04 No personal data in passwords · AW-AUTH-05 MFA (TOTP/email/SMS + recovery codes) · AW-AUTH-06 Session limits (default 10) · AW-AUTH-07 Session alerts · AW-AUTH-08 Single Client SDK instance.
-
-**Permissions**: AW-PERM-01 Resource-level enforcement (bypassed by API key) · AW-PERM-02 Server SDK default = empty; Client SDK default = creator access · AW-PERM-03 Permission class: read/create/update/delete/write · AW-PERM-04 Never Role.any() on mutable resources · AW-PERM-05 Enable Row Security for per-row enforcement · AW-PERM-06 Memberships privacy config.
-
-**API Keys**: AW-KEY-01 Least-privilege scopes (leaked broad key = full compromise) · AW-KEY-02 Never in client code · AW-KEY-03 Dynamic keys for Functions · AW-KEY-04 JWT (15min) for user context, not API keys.
-
-**Encryption**: AW-ENC-01 Bucket encryption (AES-128-GCM, <20MB) · AW-ENC-02 Column encryption (cannot query encrypted) · AW-ENC-03 HTTPS enforced + HSTS.
-
-**Abuse**: AW-ABUSE-01 Built-in rate limits · AW-ABUSE-02 Platform allowlisting (CORS) · AW-ABUSE-03 Always-on DDoS (L3/L4/L7).
-
-**Backups**: AW-BACKUP-01 Encrypted in transit+rest · AW-BACKUP-02 Automated daily (7-day Pro) · AW-BACKUP-03 Test restores.
-
-**Self-hosted**: AW-SELF-01 HTTPS, firewalls, logs, backups, updates · AW-SELF-02 One project per environment.
-
 ## 20. JS/TS Security Quirks
 
 **Prototype pollution**: Never Object.assign(target, userInput) — use Object.create(null) or validate keys.

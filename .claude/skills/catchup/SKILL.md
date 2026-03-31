@@ -7,6 +7,6 @@ allowed-tools: Bash(git *), Bash(npm run *), Bash(npx *), Read, Glob, Grep
 1. Read `tasks/gotchas.md` — apply lessons this session
 2. Read `tasks/todo.md` — current task progress
 3. Git: `status`, `diff --stat`, `log --oneline -5`, uncommitted changes
-4. Context: CLAUDE.md, `lib/appwrite/config.ts`
+4. Context: CLAUDE.md, relevant config files
 5. Health: `npx tsc --noEmit | tail -10`, `npm test | tail -20`
-6. Summary: branch, done/remaining, blockers, active collections, key gotchas
+6. Summary: branch, done/remaining, blockers, key gotchas

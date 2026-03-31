@@ -1,6 +1,6 @@
 # Deployment Diagram
 
-> Infrastructure, environments, and provider relationships. Update on infra changes.
+> Infrastructure and provider relationships. Update on infra changes.
 
 ```mermaid
 graph TB
@@ -14,17 +14,10 @@ graph TB
         Static[Static Assets / CDN]
     end
 
-    subgraph "Appwrite Cloud"
+    subgraph "Backend"
         Auth[Authentication]
-        DB[Databases]
-        Storage[Storage]
-        Functions[Functions]
-    end
-
-    subgraph "Payment Providers"
-        Stripe[Stripe]
-        PayPal[PayPal]
-        TNG[TNG eWallet]
+        DB[Database]
+        Storage[File Storage]
     end
 
     Browser --> Edge --> SSR
@@ -32,7 +25,4 @@ graph TB
     SSR --> Auth
     SSR --> DB
     SSR --> Storage
-    SSR --> Stripe
-    SSR --> PayPal
-    SSR --> TNG
 ```
