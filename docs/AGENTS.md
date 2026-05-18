@@ -1,10 +1,11 @@
 # Multi-Agent Orchestration
 
 > Specialised agents dispatched automatically based on task type.
-> Inspired by [everything-claude-code](https://github.com/affaan-m/everything-claude-code) agent patterns.
 
 ## Core Principle
-**Agent-First Development** — delegate to specialised subagents instead of doing everything in one context. Each agent has a focused role, clear inputs/outputs, and hands off context via structured reports.
+**Agent-First Development** — delegate to specialised subagents. Each agent has a focused role, clear inputs/outputs, and hands off context via structured reports.
+
+**Karpathy Alignment**: Agents are fallible interns. Human retains taste, judgment, system comprehension. Always review agent output.
 
 ## Agent Roster
 
@@ -13,12 +14,12 @@
 |-------|---------|-----------------|
 | **Planner** (opus) | Requirements analysis, implementation phases, risk assessment | Any 3+ step feature or complex task |
 | **Architect** (opus) | System design, scalability review, ADR creation | Architectural decisions, new system boundaries |
-| **Researcher** | Search for existing solutions, evaluate packages, read docs | Before ANY new implementation |
+| **Researcher** | Search MiHCM MCP, npm, skills, GitHub for existing solutions | Before ANY new implementation |
 
 ### Implementation & Quality
 | Agent | Purpose | When to Dispatch |
 |-------|---------|-----------------|
-| **Code Reviewer** | Code quality, maintainability, patterns, dead code detection | After any code is written/modified |
+| **Code Reviewer** | Code quality, MiHCM compliance, no hardcoded values | After any code is written/modified |
 | **Security Reviewer** | Vulnerability detection, OWASP checks, secret scanning | Auth/payment/PII code, pre-commit |
 | **Build Resolver** | Fix build errors, type errors, lint failures | When verification loop fails |
 | **Refactor Cleaner** | Dead code removal, pattern consolidation | Post-feature cleanup |
@@ -26,8 +27,8 @@
 ### Design & UX
 | Agent | Purpose | When to Dispatch |
 |-------|---------|-----------------|
-| **Design Researcher** | Research real product UIs, gather design references | Before ANY UI work |
-| **Design Auditor** | AI Slop Detection, visual quality review | After any UI component is created |
+| **Design Researcher** | Research real product UIs, query MiHCM MCP for components | Before ANY UI work |
+| **Design Auditor** | MiHCM compliance, no hardcoded values, visual quality | After any UI component is created |
 | **A11y Reviewer** | WCAG compliance, keyboard nav, screen reader testing | Every UI change |
 
 ### Testing
@@ -43,11 +44,9 @@
 
 ## Orchestration Chains
 
-Dispatch agents in sequence. Each agent produces a handoff document consumed by the next.
-
 ### Feature Development
 ```
-Planner → Researcher → [Design Researcher if UI] → TDD Guide → Code Reviewer → Security Reviewer → Design Auditor
+Planner → Researcher → [Design Researcher + MiHCM MCP if UI] → TDD Guide → Code Reviewer → Security Reviewer → Design Auditor
 ```
 
 ### Bug Fix
@@ -62,7 +61,7 @@ Architect → Code Reviewer → Refactor Cleaner → TDD Guide (verify no regres
 
 ### UI Component
 ```
-Design Researcher → Planner → TDD Guide → Code Reviewer → Design Auditor → A11y Reviewer
+Design Researcher (+ MiHCM MCP search) → Planner → TDD Guide → Code Reviewer → Design Auditor → A11y Reviewer
 ```
 
 ### Security Audit
@@ -70,9 +69,43 @@ Design Researcher → Planner → TDD Guide → Code Reviewer → Design Auditor
 Security Reviewer → Code Reviewer → Architect (review boundaries)
 ```
 
-## Handoff Document Format
+## MiHCM-First Protocol (Design Researcher Agent)
 
-Every agent produces a structured handoff:
+Before building ANY UI component:
+
+1. **Search MiHCM MCP** — `mihcm_search_components` for existing components
+2. **Get details** — `mihcm_get_component` for props, variants, examples
+3. **Check tokens** — `mihcm_list_tokens` for available design tokens
+4. **Decision**:
+   - **Use directly** — MiHCM component fits requirements (best option)
+   - **Compose** — combine MiHCM components into a feature composite
+   - **Extend** — wrap MiHCM component with domain-specific props
+   - **Never**: build a UI primitive from scratch
+
+## Automatic Dispatch Rules
+
+| Trigger | Agent(s) | MCP |
+|---------|----------|-----|
+| Complex feature request | Planner (first) | — |
+| Code just written/modified | Code Reviewer | — |
+| Bug fix or new feature | TDD Guide | — |
+| Architectural decision needed | Architect | — |
+| Auth, payment, or PII code touched | Security Reviewer | — |
+| UI component created/modified | Design Auditor + A11y Reviewer | MiHCM MCP (always) |
+| New UI work starting | Design Researcher | MiHCM MCP (always) |
+| New dependency considered | Researcher | — |
+| Build/type/lint errors | Build Resolver | — |
+| Post-feature cleanup | Refactor Cleaner | — |
+
+## Search-First Protocol (Researcher Agent)
+
+1. **Define need** — what functionality + constraints
+2. **Search** — MiHCM MCP → npm → skills → GitHub (in this order)
+3. **Evaluate** — functionality, maintenance, size, license
+4. **Decision**: Adopt > Extend > Compose > Build
+5. **Anti-patterns**: jumping to code, ignoring MiHCM MCP, dependency bloat
+
+## Handoff Document Format
 
 ```markdown
 ## Agent: [name]
@@ -81,7 +114,10 @@ What was analysed and why.
 
 ### Findings
 - Finding 1 (severity: critical/high/medium/low)
-- Finding 2
+
+### MiHCM Compliance
+- Components used: [list]
+- Hardcoded values found: [list or "none"]
 
 ### Files Modified/Reviewed
 - `src/path/file.ts` — what was done
@@ -91,51 +127,18 @@ What was analysed and why.
 
 ### Recommendations
 - Action item 1
-- Action item 2
 ```
 
 ## Parallel Execution Rules
 
 - **Independent agents** run simultaneously (e.g., Security Reviewer + Design Auditor)
-- **Dependent agents** run sequentially (e.g., Planner must finish before TDD Guide starts)
+- **Dependent agents** run sequentially (e.g., Planner must finish before TDD Guide)
 - **Max parallel**: 3-5 agents for complex features
 - **Context isolation**: each agent gets only the files/context it needs
 
-## Automatic Dispatch Rules
-
-| Trigger | Agent(s) |
-|---------|----------|
-| Complex feature request | Planner (first) |
-| Code just written/modified | Code Reviewer |
-| Bug fix or new feature | TDD Guide |
-| Architectural decision needed | Architect |
-| Auth, payment, or PII code touched | Security Reviewer |
-| UI component created/modified | Design Auditor + A11y Reviewer |
-| New dependency considered | Researcher |
-| Build/type/lint errors | Build Resolver |
-| Post-feature cleanup | Refactor Cleaner |
-
-## Search-First Protocol (Researcher Agent)
-
-Before writing ANY new utility, helper, or integration:
-
-1. **Define need** — what functionality + constraints
-2. **Parallel search** — npm registry, MCP tools, available skills, GitHub
-3. **Evaluate candidates** — functionality, maintenance, community, docs, license, size
-4. **Decision matrix**:
-   - **Adopt** — use the package directly (best option)
-   - **Extend** — install + thin wrapper for project conventions
-   - **Compose** — combine 2-3 focused packages
-   - **Build** — custom implementation, informed by research findings
-5. **Anti-patterns**: jumping to code without checking, ignoring MCP tools, over-customising library wrappers, dependency bloat
-
 ## Iterative Retrieval (for Subagent Context)
 
-When a subagent needs to understand the codebase:
-
 1. **DISPATCH** — start broad (glob patterns, grep for key terms)
-2. **EVALUATE** — assess relevance of what was found
-3. **REFINE** — narrow search based on discovered terminology/patterns
+2. **EVALUATE** — assess relevance
+3. **REFINE** — narrow search based on discovered patterns
 4. **LOOP** — max 3 cycles. 3 high-relevance files > 10 mediocre ones.
-
-First cycle reveals codebase naming conventions. Second cycle uses those conventions. Third cycle fills remaining gaps.

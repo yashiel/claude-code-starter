@@ -14,7 +14,9 @@
       "Bash(ls *)",
       "Bash(mkdir *)",
       "Bash(cp *)",
-      "Bash(mv *)"
+      "Bash(mv *)",
+      "Bash(pnpm *)",
+      "mcp__mihcm__*"
     ],
     "deny": [
       "Read(.env)",

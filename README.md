@@ -1,140 +1,248 @@
 # Claude Code Starter Kit
 
-A production-grade project template for building Next.js applications with AI-assisted development using [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview). Multi-agent orchestration, 8-role thinking, search-first development, zero-AI-slop design standards, and a security playbook — ready out of the box.
-
-Inspired by [everything-claude-code](https://github.com/affaan-m/everything-claude-code) agent patterns.
+A production-grade monorepo template for building web, mobile, and static applications with AI-assisted development using [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview). Built on **Karpathy Principles**, the **MiHCM Design System**, multi-agent orchestration, and 8-role thinking.
 
 ---
 
-## What This Does
+## Philosophy
 
-A **folder structure, configuration, and knowledge base** that makes Claude Code dramatically more effective. Instead of explaining your stack, standards, and workflows every session, you write it once — Claude reads it automatically.
+**Karpathy Principles** govern every line of code in this template:
 
-**Core behaviours:**
-- **8-role thinking** — System Architect, Software Engineer, DB Engineer, QA, Designer, Creative Director, UX Designer, Frontend Developer. Every task runs all 8 lenses.
-- **Multi-agent orchestration** — specialised subagents dispatched automatically. See `docs/AGENTS.md`.
-- **Search-first** — before writing ANY code, search existing packages/tools. Adopt > Extend > Compose > Build.
-- **6-phase verification** — Build → TypeCheck → Lint → Tests → Security → Diff. All must pass.
-- **Zero AI slop** — production-grade UI only. Research real products. WCAG 2.1 AA. Skeletons not spinners.
-- **Memory across sessions** — `MEMORY.md` updated at session end, read at session start.
+1. **Think Before Coding** — state assumptions, surface tradeoffs, ask when unclear
+2. **Simplicity First** — minimum code that solves the problem, nothing speculative
+3. **Surgical Changes** — touch only what you must, match existing style
+4. **Goal-Driven Execution** — define verifiable success criteria, loop until verified
 
-## Base Stack
+These four principles are the highest priority. Everything else serves them.
 
-Next.js 15+ (App Router, React 19) · TypeScript strict · shadcn/ui · Tailwind CSS 4 · Lucide Icons · TanStack Query (when needed) · Vercel
+---
 
-**Backend/auth/payments are left open** — add whatever you need (Supabase, Appwrite, Prisma, Clerk, Stripe, etc.)
+## Stack
+
+| Layer | Technology |
+|-------|-----------|
+| Framework | Next.js 15+ (App Router, React 19) |
+| Language | TypeScript (strict mode) |
+| Validation | Zod |
+| Client State | Zustand |
+| Data Fetching | TanStack Query (client polling/optimistic) |
+| Styling | Tailwind CSS 4 (semantic tokens only) |
+| Design System | [MiHCM Design System](https://designsystem.mihcm.com/) |
+| Icons | MiHCM Icons (1,703 Lucide-based) |
+| Mobile | Expo (React Native, NativeWind, Expo Router) |
+| Deployment | Vercel |
+
+**No other UI libraries.** No shadcn/ui, Radix (direct), Material UI, Chakra, Ant Design, or Mantine. All components come from `@yashiel/mihcm-ui`. No hardcoded CSS values — semantic tokens only.
+
+**Backend, auth, and payments are left open** — add whatever fits your needs.
 
 ---
 
 ## Quick Start
 
-### New Project
+### Prerequisites
+- Node.js 18+
+- GitHub PAT with `read:packages` scope (for `@yashiel` registry)
+- Claude Code CLI
+
+### Setup
+
 ```bash
-npx create-next-app@latest my-project
-cd my-project
-# Copy starter files in (see "What's Inside" for structure)
+# 1. Clone or copy the template
+git clone <this-repo> my-project && cd my-project
+
+# 2. Configure npm registry for MiHCM packages
+echo '//npm.pkg.github.com/:_authToken=YOUR_TOKEN' >> ~/.npmrc
+echo '@yashiel:registry=https://npm.pkg.github.com' >> ~/.npmrc
+
+# 3. Install MiHCM packages
+pnpm add @yashiel/mihcm-ui @yashiel/mihcm-theme @yashiel/mihcm-tokens @yashiel/mihcm-icons
+
+# 4. Register MCP servers
+claude mcp add --transport http --scope project mihcm https://designsystem.mihcm.com/mcp
+claude mcp add --transport http context7 https://mcp.context7.com/mcp
+claude mcp add --transport http figma https://mcp.figma.com/mcp
+claude mcp add --transport http vercel https://mcp.vercel.com
+
+# 5. Customise CLAUDE.md
+# Replace [PROJECT_NAME] and [One-line description]
 ```
 
 ### Existing Project
+
 ```bash
 cd your-existing-project
-# Copy non-conflicting files
+
+# Copy core files
 cp path/to/starter/CLAUDE.md path/to/starter/MEMORY.md .
 cp -r path/to/starter/.claude path/to/starter/tasks path/to/starter/tools .
 cp -rn path/to/starter/docs .
-cp path/to/starter/src/CLAUDE.md src/
-cp path/to/starter/tests/CLAUDE.md tests/ 2>/dev/null
-```
-
-Then customise `CLAUDE.md`: replace `[PROJECT_NAME]`, update Stack, add your MCP servers.
-
-### MCP Servers (optional)
-```bash
-claude mcp add --transport http context7 https://mcp.context7.com/mcp    # latest docs
-claude mcp add --transport http figma https://mcp.figma.com/mcp          # design-to-code
-claude mcp add --transport http vercel https://mcp.vercel.com            # deployments
+cp path/to/starter/.mcp.json .
 ```
 
 ---
 
-## What's Inside
+## Project Structure
 
 ```
 claude-code-starter/
-├── CLAUDE.md                    ← Main brain — read every session
-├── MEMORY.md                    ← Session continuity
-├── .env.example                 ← Env var template
+├── CLAUDE.md                        <- Main brain — Karpathy principles, stack, workflow
+├── MEMORY.md                        <- Session continuity across conversations
+├── .mcp.json                        <- MiHCM MCP server registration
+├── .env.example                     <- Environment variable template
 ├── .claude/
-│   ├── settings.json            ← Permissions, hooks
-│   ├── commands/                ← /commit, /feature, /fix, /pr, /catchup
-│   └── skills/                  ← Auto-invoked: plan, review, catchup
+│   ├── settings.json                <- Permissions, hooks, MiHCM tool allowlist
+│   ├── commands/                    <- /commit, /feature, /fix, /pr, /catchup
+│   └── skills/                      <- Auto-invoked: plan, review, catchup
+├── src/
+│   ├── web/                         <- MiHCM Next.js project
+│   │   ├── app/                     <- App Router (layout, page, loading, error)
+│   │   │   ├── (auth)/              <- Login, register routes
+│   │   │   ├── (dashboard)/         <- Protected routes
+│   │   │   └── api/                 <- Route handlers
+│   │   ├── components/
+│   │   │   ├── ds/                  <- MiHCM CLI-copied components
+│   │   │   └── features/            <- Domain composites from MiHCM
+│   │   ├── lib/                     <- env.ts, errors.ts, utils.ts
+│   │   ├── actions/                 <- Server Actions by domain
+│   │   ├── hooks/                   <- Custom React hooks
+│   │   ├── stores/                  <- Zustand stores by domain
+│   │   ├── providers/               <- QueryClientProvider, ThemeProvider
+│   │   └── types/                   <- Shared TypeScript types
+│   ├── mobile/                      <- Expo (React Native) project
+│   │   ├── app/                     <- Expo Router screens
+│   │   ├── components/              <- MiHCM native components
+│   │   ├── hooks/                   <- Mobile-specific hooks
+│   │   ├── stores/                  <- Zustand stores
+│   │   └── types/                   <- Shared types
+│   └── static/                      <- Plain HTML/CSS/JS project
+│       ├── pages/                   <- HTML pages
+│       ├── css/                     <- Stylesheets (MiHCM tokens via CSS vars)
+│       ├── js/                      <- Vanilla JavaScript
+│       └── assets/                  <- Images, fonts, icons
 ├── docs/
-│   ├── AGENTS.md                ← Multi-agent orchestration patterns
-│   ├── ARCHITECTURE.md          ← System design, data flow, diagrams
-│   ├── CONVENTIONS.md           ← Code quality, design standards
-│   ├── SECURITY.md              ← 24-rule quick reference
-│   ├── security-playbook.md     ← Full security playbook (100+ rules)
-│   ├── decisions/               ← ADR templates
-│   ├── diagrams/                ← 7 Mermaid diagrams (ERD, class, deployment, etc.)
-│   └── runbooks/mcp-setup.md    ← MCP server setup
-├── src/CLAUDE.md                ← Source conventions
-├── tests/CLAUDE.md              ← Testing conventions
+│   ├── AGENTS.md                    <- Multi-agent orchestration patterns
+│   ├── ARCHITECTURE.md              <- System design, data flow, monorepo layout
+│   ├── CONVENTIONS.md               <- Code quality, MiHCM usage, design standards
+│   ├── SECURITY.md                  <- 24-rule quick reference
+│   ├── security-playbook.md         <- Full security playbook (100+ rules)
+│   ├── decisions/                   <- Architecture Decision Records
+│   ├── diagrams/                    <- 7 Mermaid diagrams
+│   └── runbooks/mcp-setup.md       <- MCP server setup guide
 ├── tasks/
-│   ├── todo.md                  ← Current plan
-│   └── gotchas.md               ← Lessons learned
-├── tools/                       ← scripts/, prompts/
-└── scripts/CLAUDE.md            ← Script conventions
+│   ├── todo.md                      <- Current work plan
+│   └── gotchas.md                   <- Lessons learned
+└── tools/                           <- Scripts and prompt templates
 ```
 
 ---
 
-## Key Concepts
+## MCP Servers
 
-### 8-Role Thinking (every task)
+The template connects Claude Code to external services via MCP:
+
+| Server | Purpose | Required |
+|--------|---------|----------|
+| **MiHCM** | Component search, token lookup, code review, RSC boundary checks | Yes (all UI work) |
+| **Context7** | Up-to-date docs for any library | Recommended |
+| **Figma** | Design-to-code context, screenshots | Optional |
+| **Vercel** | Deployments, preview URLs | Optional |
+
+MiHCM MCP auto-loads for any UI/design task. See [docs/runbooks/mcp-setup.md](docs/runbooks/mcp-setup.md) for setup details.
+
+---
+
+## How It Works
+
+### 8-Role Thinking
+
+Every task runs through all 8 lenses before a single line of code is written:
+
 | Lens | Focus |
 |------|-------|
-| System Architect | System fit, scale 10x/100x |
-| Software Engineer | Clean code, SOLID, error handling |
-| Database Engineer | Schema, indexes, migrations |
-| QA Engineer | What breaks? Edge cases? |
-| Designer | Production-grade, research real products |
-| Creative Director | Visual identity, typography, spacing |
-| UX Designer | Frictionless journey, accessibility |
-| Frontend Developer | RSC, mobile-first, all states |
+| System Architect | System fit, data flow, scale 10x/100x |
+| Software Engineer | Clean code, SOLID, types, error handling |
+| Database Engineer | Schema, indexes, reversible migrations |
+| QA Engineer | What breaks? Null, 10k items, Unicode, auth bypass |
+| Designer | MiHCM components, no hardcoded values, production-grade |
+| Creative Director | Typography hierarchy, color via MiHCM tokens, spacing rhythm |
+| UX Designer | Frictionless journey, cognitive load, progressive disclosure |
+| Frontend Developer | RSC boundaries, accessible, mobile-first, all states |
 
 ### Multi-Agent Orchestration
+
+Specialised agents dispatched automatically based on task type:
+
 | Chain | Agents |
 |-------|--------|
-| Feature | planner → researcher → implementer → code-reviewer → security-reviewer |
-| Bugfix | debugger → implementer → code-reviewer |
-| Refactor | architect → code-reviewer → implementer |
-| UI/Design | design-researcher → implementer → design-auditor → a11y-reviewer |
+| Feature | planner -> researcher -> MiHCM MCP -> implementer -> code-reviewer -> security-reviewer |
+| Bug Fix | planner -> TDD guide -> code-reviewer |
+| Refactor | architect -> code-reviewer -> refactor cleaner |
+| UI Component | design researcher + MiHCM MCP -> planner -> implementer -> design auditor -> a11y reviewer |
+
+### Verification Loop
+
+Six phases that must all pass before any task is considered done:
+
+```
+Build -> TypeCheck -> Lint -> Tests -> Security -> Diff Review
+```
 
 ### Slash Commands
+
 | Command | What It Does |
 |---------|-------------|
-| `/commit` | Cleanup → security check → verify → commit |
-| `/feature [desc]` | 8 personas → research → plan → approve → build |
-| `/fix [desc]` | Root cause → fix → regression test |
-| `/pr` | Quality gate → review → PR description |
+| `/commit` | Cleanup, security check, verify, commit |
+| `/feature [desc]` | 8 personas, research, plan, approve, build |
+| `/fix [desc]` | Root cause analysis, fix, regression test |
+| `/pr` | Quality gate, review, create PR |
 | `/catchup` | Reload context from memory + tasks + git |
 
-### Dual-Repo Publishing
-When publishing to GitHub, creates two repos:
-1. **Full project** — everything (CLAUDE.md, docs, tasks, tools, src)
-2. **Deployable app** — only what cloud providers need (src, configs, package.json)
+---
+
+## MiHCM Design System
+
+All UI work uses the [MiHCM Design System](https://designsystem.mihcm.com/):
+
+- **60+ components** — Button, DataTable, Card, Dialog, Sidebar, Form, Chart, and more
+- **Design tokens** — colors (primary navy, accent orange), spacing (4px base), typography, motion
+- **1,703 icons** — Lucide-based, via `@yashiel/mihcm-icons`
+- **MCP server** — 20+ tools for component search, token lookup, code review
+- **CLI** — `npx @yashiel/mihcm-cli add <Component>` for copy-paste mode
+- **AI UI** — Zod-validated generative UI via `@yashiel/mihcm-ai-ui`
+
+### Import Pattern
+
+```tsx
+// Subpath imports for tree-shaking
+import { Button } from '@yashiel/mihcm-ui/Button';
+import { DataTable } from '@yashiel/mihcm-ui/DataTable';
+```
 
 ---
 
 ## Customising
 
-**Must customise**: `CLAUDE.md` (project name, stack, MCP servers) · `.env.example`
+| What | Where |
+|------|-------|
+| Project name and description | `CLAUDE.md` top section |
+| Backend/auth/payments | Update Stack in `CLAUDE.md`, add env vars, update `docs/ARCHITECTURE.md` |
+| MCP servers | `.mcp.json` and `docs/runbooks/mcp-setup.md` |
+| Environment variables | `.env.example` |
+| Permissions and hooks | `.claude/settings.json` |
 
-**Add your backend**: Update Stack in `CLAUDE.md` · Add env vars · Update `docs/ARCHITECTURE.md` data flow
+**Don't change**: Karpathy Principles section, security-playbook.md, verification loop, quality gates.
 
-**Add payments**: Create `docs/PAYMENTS.md` · Add provider rules to CLAUDE.md
+---
 
-**Don't change**: security-playbook.md · AGENTS.md · verification loop · quality gates
+## Dual-Repo Publishing
+
+When publishing to GitHub, the template creates two repositories:
+
+1. **`{project-name}`** — everything (CLAUDE.md, docs, tasks, tools, src, configs)
+2. **`{project-name}-app`** — deployable only (src, configs, package.json)
+
+Cloud providers only need the app. Dev context stays separate.
 
 ---
 
@@ -142,16 +250,17 @@ When publishing to GitHub, creates two repos:
 
 | Problem | Fix |
 |---------|-----|
-| Claude ignores rules | Keep CLAUDE.md critical rules near top |
+| Claude ignores rules | Karpathy Principles and stack enforcement are at the top of CLAUDE.md |
 | Same mistake repeated | Add to `tasks/gotchas.md`, promote to CLAUDE.md if persistent |
 | High token usage | Use `/clear` + `/catchup` to reset context |
-| MCP won't start | Check Node.js installed, verify env vars, see `docs/runbooks/mcp-setup.md` |
-| `redirect()` silent fail | Move outside `try/catch` |
+| MCP not connecting | Check `claude mcp list`, restart session, see `docs/runbooks/mcp-setup.md` |
+| MiHCM packages not found | Verify `~/.npmrc` has `@yashiel:registry=https://npm.pkg.github.com` |
 
 ---
 
 ## Resources
 
-- [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) · [MCP](https://modelcontextprotocol.io)
-- [Next.js](https://nextjs.org/docs/app) · [shadcn/ui](https://ui.shadcn.com) · [Tailwind CSS](https://tailwindcss.com)
-- [everything-claude-code](https://github.com/affaan-m/everything-claude-code) — agent patterns
+- [Claude Code](https://docs.anthropic.com/en/docs/claude-code/overview) | [MCP](https://modelcontextprotocol.io)
+- [MiHCM Design System](https://designsystem.mihcm.com/) | [Tailwind CSS 4](https://tailwindcss.com)
+- [Next.js App Router](https://nextjs.org/docs/app) | [Zustand](https://zustand.docs.pmnd.rs/) | [TanStack Query](https://tanstack.com/query)
+- [Zod](https://zod.dev) | [Expo](https://docs.expo.dev)
