@@ -4,7 +4,8 @@
 [PROJECT_NAME] — Next.js App Router + [YOUR_BACKEND] + MiHCM Design System.
 
 ## Stack
-Next.js 15+ (App Router, React 19) · TypeScript strict · Zod · Zustand · TanStack Query · Tailwind CSS 4 · MiHCM Design System (`@yashiel/mihcm-ui`, `@yashiel/mihcm-theme`, `@yashiel/mihcm-tokens`, `@yashiel/mihcm-icons`) · Vercel
+**Core**: Next.js 15+ (App Router, React 19) · TypeScript strict · Zod · Zustand · TanStack Query · Tailwind CSS 4 · MiHCM Design System · Vercel
+**Forms**: react-hook-form + @hookform/resolvers + zod · **Tables**: @tanstack/react-table · **Virtualization**: @tanstack/react-virtual · **i18n**: next-intl · **Dates**: date-fns + date-fns-tz · **Viz**: d3 · **DnD**: @dnd-kit/core · **Command**: cmdk · **Rich Text**: tiptap · **Animation**: motion · **Upload**: react-dropzone · **Monitoring**: @sentry/nextjs · **Analytics**: posthog-js · **Tests**: vitest + @testing-library/react + playwright · **Email**: @react-email
 
 ## Data Flow
 ```

@@ -32,7 +32,28 @@ These four principles are the highest priority. Everything else serves them.
 | Mobile | Expo (React Native, NativeWind, Expo Router) |
 | Deployment | Vercel |
 
-**No other UI libraries.** No shadcn/ui, Radix (direct), Material UI, Chakra, Ant Design, or Mantine. All components come from `@yashiel/mihcm-ui`. No hardcoded CSS values — semantic tokens only.
+### Enforced Libraries
+
+| Domain | Library |
+|--------|---------|
+| Forms | `react-hook-form` + `@hookform/resolvers` + `zod` |
+| Tables | `@tanstack/react-table` |
+| Virtualization | `@tanstack/react-virtual` |
+| i18n | `next-intl` |
+| Dates | `date-fns` + `date-fns-tz` |
+| Data Viz | `d3` |
+| Drag & Drop | `@dnd-kit/core` |
+| Command Palette | `cmdk` |
+| Rich Text | `tiptap` |
+| Animation | `motion` |
+| File Upload | `react-dropzone` |
+| Error Monitoring | `@sentry/nextjs` |
+| Analytics | `posthog-js` |
+| Unit/Integration Tests | `vitest` + `@testing-library/react` |
+| E2E Tests | `playwright` |
+| Emails | `@react-email` |
+
+**No other UI libraries.** No shadcn/ui, Radix (direct), Material UI, Chakra, Ant Design, or Mantine. All components come from `@yashiel/mihcm-ui`. No hardcoded CSS values — semantic tokens only. Never build custom solutions when an enforced library covers the need.
 
 **Backend, auth, and payments are left open** — add whatever fits your needs.
 

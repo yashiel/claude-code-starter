@@ -27,6 +27,65 @@ Server Components default · `"use client"` only for hooks/events/browser APIs �
 - **No prop drilling** — Zustand stores for cross-component state
 - Store files in `src/stores/[domain].ts`
 
+## Enforced Library Usage
+
+Every library below is mandatory for its domain. Never build custom solutions when these exist.
+
+### Forms — `react-hook-form` + `@hookform/resolvers` + `zod`
+All forms use React Hook Form with Zod resolver. Pair with MiHCM `Form`, `Input`, `Select`, etc.
+```tsx
+import { useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+const schema = z.object({ name: z.string().min(1), email: z.string().email() });
+const form = useForm({ resolver: zodResolver(schema) });
+```
+
+### Tables — `@tanstack/react-table`
+Headless table logic. Always render through MiHCM `DataTable` or `Table` components.
+Never write custom sorting, filtering, or pagination logic — TanStack Table handles it.
+
+### Virtualization — `@tanstack/react-virtual`
+Any list/grid rendering 100+ items MUST use virtual scrolling. No exceptions.
+
+### i18n — `next-intl`
+All user-facing strings go through `next-intl`. No hardcoded display text. Use `useTranslations()` in client components, `getTranslations()` in server components.
+
+### Dates — `date-fns` + `date-fns-tz`
+All date manipulation uses `date-fns`. Timezone-aware operations use `date-fns-tz`. Never use `moment`, `dayjs`, or raw `Date` methods for formatting/manipulation.
+
+### Data Visualization — `d3`
+Charts, graphs, and custom visualizations use D3. Always bind MiHCM color tokens (`--color-primary`, `--color-accent`, etc.) for palette. Never use Chart.js or Recharts.
+
+### Drag & Drop — `@dnd-kit/core`
+Sortable lists, kanban, reorderable UI. Never use `react-beautiful-dnd` or custom drag event handlers.
+
+### Command Palette — `cmdk`
+Command menu / spotlight search. Integrates with MiHCM `Command` component.
+
+### Rich Text — `tiptap`
+Rich text editing for content creation. Never use Quill, Slate, or Lexical.
+
+### Animation — `motion`
+All transitions and layout animations use `motion` (formerly framer-motion). Use MiHCM motion tokens for duration values (`duration-micro`, `duration-medium`, `duration-long`). Respect `prefers-reduced-motion`.
+
+### File Upload — `react-dropzone`
+Drag-and-drop file uploads. Never write custom drag event handlers for file upload.
+
+### Error Monitoring — `@sentry/nextjs`
+Production error tracking. Captures unhandled errors, performance data, and custom events.
+
+### Analytics — `posthog-js`
+Product analytics and feature flags. Track user events, page views, and feature usage.
+
+### Testing — `vitest` + `@testing-library/react` + `playwright`
+- **Unit/Integration**: `vitest` + `@testing-library/react`. Arrange-Act-Assert pattern.
+- **E2E**: `playwright` for critical user flows. Never use Cypress or Puppeteer.
+- Test files: `[name].test.ts` (unit), `[name].spec.ts` (e2e).
+
+### Emails — `@react-email`
+Transactional email templates built with React components. Never build raw HTML email strings.
+
 ## MiHCM Design System (MANDATORY)
 
 ### Component Usage

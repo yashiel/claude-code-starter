@@ -28,6 +28,7 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 
 ## Stack (ENFORCED — no exceptions)
 
+### Core
 | Layer | Technology | Notes |
 |-------|-----------|-------|
 | Framework | Next.js 15+ (App Router, React 19) | TypeScript strict mode |
@@ -43,12 +44,60 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 | CLI | MiHCM CLI (`@yashiel/mihcm-cli`) | `npx @yashiel/mihcm-cli add <Component>` |
 | Deployment | Vercel | Git-push deploys |
 
+### Enforced Libraries (use these — never build from scratch)
+| Need | Library | Notes |
+|------|---------|-------|
+| Forms | `react-hook-form` + `@hookform/resolvers` + `zod` | Zod resolver for all form validation |
+| Tables | `@tanstack/react-table` | Headless — render with MiHCM `DataTable`/`Table` |
+| Virtualization | `@tanstack/react-virtual` | Large lists/grids — never render 1000+ items without it |
+| i18n | `next-intl` | All user-facing strings. No hardcoded text. |
+| Dates | `date-fns` + `date-fns-tz` | Date manipulation + timezone handling. Not `moment`. Not `dayjs`. |
+| Data Visualization | `d3` | Charts, graphs, custom viz. Bindwith MiHCM tokens for colors. |
+| Drag & Drop | `@dnd-kit/core` | Sortable lists, kanban boards, reorderable UI |
+| Command Palette | `cmdk` | Command menu / spotlight search. Pair with MiHCM `Command`. |
+| Rich Text Editor | `tiptap` | Rich text editing. Not Quill, not Slate, not Lexical. |
+| Animation | `motion` | Transitions, layout animations, gestures. Use MiHCM motion tokens for durations. |
+| File Upload | `react-dropzone` | Drag-and-drop file uploads |
+| Error Monitoring | `@sentry/nextjs` | Error tracking, performance monitoring |
+| Analytics | `posthog-js` | Product analytics, feature flags |
+| Unit/Integration Tests | `vitest` + `@testing-library/react` | All component and unit tests |
+| E2E Tests | `playwright` | End-to-end browser tests |
+| Emails | `@react-email` | Transactional email templates |
+
+### Use This, Not That
+| When you need... | USE | NEVER build/use |
+|-----------------|-----|-----------------|
+| A form | `react-hook-form` + `zod` + MiHCM `Form`/`Input` | Custom form state, uncontrolled inputs without RHF |
+| A data table | `@tanstack/react-table` + MiHCM `DataTable` | Custom table sorting/filtering/pagination logic |
+| A long list | `@tanstack/react-virtual` | Rendering all items, custom virtual scroll |
+| Translated text | `next-intl` `useTranslations()` | Hardcoded strings, custom i18n |
+| Date formatting | `date-fns` `format()` / `formatDistance()` | `new Date().toLocaleDateString()`, moment, dayjs |
+| A chart | `d3` + MiHCM color tokens | Chart.js, Recharts, custom SVG |
+| Drag reordering | `@dnd-kit/core` | `react-beautiful-dnd`, custom drag handlers |
+| Command palette | `cmdk` + MiHCM `Command` | Custom search dialogs |
+| Rich text | `tiptap` editor | Textarea for rich content, Quill, Slate |
+| Animations | `motion` + MiHCM motion tokens | Raw CSS transitions, react-spring, GSAP |
+| File drop zone | `react-dropzone` | Custom drag event handlers |
+| Error tracking | `@sentry/nextjs` | `console.error` in production, custom error services |
+| Analytics | `posthog-js` | Custom event tracking, Google Analytics |
+| Tests | `vitest` + `@testing-library/react` | Jest (unless already configured), Enzyme |
+| E2E tests | `playwright` | Cypress, Puppeteer |
+| Email templates | `@react-email` | Raw HTML email strings |
+| UI components | `@yashiel/mihcm-ui` | shadcn, Radix direct, MUI, Chakra, Ant, Mantine |
+
 ### Banned
 - shadcn/ui — DO NOT use. Not installed. Not allowed.
 - Radix UI (direct) — use MiHCM wrappers instead (they wrap Radix internally)
 - Material UI, Chakra UI, Ant Design, Mantine, or any other component library
 - Hardcoded CSS values (hex colors, px values, raw spacing) — use MiHCM tokens and Tailwind semantic classes
 - Any UI primitive not from `@yashiel/mihcm-ui`
+- moment.js, dayjs — use `date-fns`
+- Jest — use `vitest` (unless project already uses Jest)
+- Cypress — use `playwright`
+- Chart.js, Recharts — use `d3`
+- Quill, Slate, Lexical — use `tiptap`
+- react-spring, GSAP — use `motion`
+- react-beautiful-dnd — use `@dnd-kit/core`
 
 ### MiHCM Import Rules
 ```tsx
