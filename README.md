@@ -19,39 +19,40 @@ These four principles are the highest priority. Everything else serves them.
 
 ## Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Framework | Next.js 15+ (App Router, React 19) |
-| Language | TypeScript (strict mode) |
-| Validation | Zod |
-| Client State | Zustand |
-| Data Fetching | TanStack Query (client polling/optimistic) |
-| Styling | Tailwind CSS 4 (semantic tokens only) |
-| Design System | [MiHCM Design System](https://designsystem.mihcm.com/) |
-| Icons | MiHCM Icons (1,703 Lucide-based) |
-| Mobile | Expo (React Native, NativeWind, Expo Router) |
-| Deployment | Vercel |
+| Layer | Technology | Version |
+|-------|-----------|---------|
+| Framework | Next.js (App Router) | 16.x |
+| Runtime | React | 19.x |
+| Language | TypeScript (strict mode) | 6.x |
+| Validation | Zod | 4.x |
+| Client State | Zustand | 5.x |
+| Data Fetching | TanStack Query | 5.x |
+| Styling | Tailwind CSS (semantic tokens only) | 4.x |
+| Design System | [MiHCM Design System](https://designsystem.mihcm.com/) | latest |
+| Icons | MiHCM Icons (1,703 Lucide-based) | latest |
+| Mobile | Expo (React Native, NativeWind, Expo Router) | latest |
+| Deployment | Vercel | — |
 
 ### Enforced Libraries
 
-| Domain | Library |
-|--------|---------|
-| Forms | `react-hook-form` + `@hookform/resolvers` + `zod` |
-| Tables | `@tanstack/react-table` |
-| Virtualization | `@tanstack/react-virtual` |
-| i18n | `next-intl` |
-| Dates | `date-fns` + `date-fns-tz` |
-| Data Viz | `d3` |
-| Drag & Drop | `@dnd-kit/core` |
-| Command Palette | `cmdk` |
-| Rich Text | MiHCM `RichTextEditor` (Lexical) |
-| Animation | `motion` |
-| File Upload | `react-dropzone` |
-| Error Monitoring | `@sentry/nextjs` |
-| Analytics | `posthog-js` |
-| Unit/Integration Tests | `vitest` + `@testing-library/react` |
-| E2E Tests | `playwright` |
-| Emails | `@react-email` |
+| Domain | Library | Version |
+|--------|---------|---------|
+| Forms | `react-hook-form` + `@hookform/resolvers` + `zod` | 7.x / 5.x / 4.x |
+| Tables | `@tanstack/react-table` | 8.x |
+| Virtualization | `@tanstack/react-virtual` | 3.x |
+| i18n | `next-intl` | 4.x |
+| Dates | `date-fns` + `date-fns-tz` | 4.x / 3.x |
+| Data Viz | `d3` | 7.x |
+| Drag & Drop | `@dnd-kit/core` | 6.x |
+| Command Palette | `cmdk` | 1.x |
+| Rich Text | MiHCM `RichTextEditor` (Lexical) | 0.x |
+| Animation | `motion` | 12.x |
+| File Upload | `react-dropzone` | 15.x |
+| Error Monitoring | `@sentry/nextjs` | 10.x |
+| Analytics | `posthog-js` | 1.x |
+| Unit/Integration Tests | `vitest` + `@testing-library/react` | 4.x / 16.x |
+| E2E Tests | `playwright` | 1.x |
+| Emails | `@react-email` | 4.x |
 
 **No other UI libraries.** No shadcn/ui, Radix (direct), Material UI, Chakra, Ant Design, or Mantine. All components come from `@yashiel/mihcm-ui`. No hardcoded CSS values — semantic tokens only. Never build custom solutions when an enforced library covers the need.
 

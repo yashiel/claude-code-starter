@@ -29,40 +29,42 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 ## Stack (ENFORCED — no exceptions)
 
 ### Core
-| Layer | Technology | Notes |
-|-------|-----------|-------|
-| Framework | Next.js 15+ (App Router, React 19) | TypeScript strict mode |
-| Validation | Zod | All input boundaries |
-| State (client) | Zustand | Client-side state only |
-| Data fetching (client) | TanStack Query | Client polling/optimistic only |
-| Styling | Tailwind CSS 4 | Semantic tokens only, no hardcoded values |
-| Design System | MiHCM Design System (`@yashiel/mihcm-ui`) | ALL UI components from here |
-| Icons | MiHCM Icons (`@yashiel/mihcm-icons`) | 1,703 Lucide-based icons |
-| Tokens | MiHCM Tokens (`@yashiel/mihcm-tokens`) | CSS variables + TS constants |
-| Theme | MiHCM Theme (`@yashiel/mihcm-theme`) | Tailwind 4 preset + globals.css |
-| AI UI | MiHCM AI UI (`@yashiel/mihcm-ai-ui`) | Zod-validated generative UI |
-| CLI | MiHCM CLI (`@yashiel/mihcm-cli`) | `npx @yashiel/mihcm-cli add <Component>` |
-| Deployment | Vercel | Git-push deploys |
+| Layer | Technology | Version | Notes |
+|-------|-----------|---------|-------|
+| Framework | Next.js (App Router) | 16.x | TypeScript strict mode |
+| Runtime | React | 19.x | Server Components default |
+| Language | TypeScript | 6.x | Strict mode, no `any` |
+| Validation | Zod | 4.x | All input boundaries |
+| State (client) | Zustand | 5.x | Client-side state only |
+| Data fetching (client) | TanStack Query | 5.x | Client polling/optimistic only |
+| Styling | Tailwind CSS | 4.x | Semantic tokens only, no hardcoded values |
+| Design System | MiHCM Design System (`@yashiel/mihcm-ui`) | latest | ALL UI components from here |
+| Icons | MiHCM Icons (`@yashiel/mihcm-icons`) | latest | 1,703 Lucide-based icons |
+| Tokens | MiHCM Tokens (`@yashiel/mihcm-tokens`) | latest | CSS variables + TS constants |
+| Theme | MiHCM Theme (`@yashiel/mihcm-theme`) | latest | Tailwind 4 preset + globals.css |
+| AI UI | MiHCM AI UI (`@yashiel/mihcm-ai-ui`) | latest | Zod-validated generative UI |
+| CLI | MiHCM CLI (`@yashiel/mihcm-cli`) | latest | `npx @yashiel/mihcm-cli add <Component>` |
+| Deployment | Vercel | — | Git-push deploys |
 
 ### Enforced Libraries (use these — never build from scratch)
-| Need | Library | Notes |
-|------|---------|-------|
-| Forms | `react-hook-form` + `@hookform/resolvers` + `zod` | Zod resolver for all form validation |
-| Tables | `@tanstack/react-table` | Headless — render with MiHCM `DataTable`/`Table` |
-| Virtualization | `@tanstack/react-virtual` | Large lists/grids — never render 1000+ items without it |
-| i18n | `next-intl` | All user-facing strings. No hardcoded text. |
-| Dates | `date-fns` + `date-fns-tz` | Date manipulation + timezone handling. Not `moment`. Not `dayjs`. |
-| Data Visualization | `d3` | Charts, graphs, custom viz. Bindwith MiHCM tokens for colors. |
-| Drag & Drop | `@dnd-kit/core` | Sortable lists, kanban boards, reorderable UI |
-| Command Palette | `cmdk` | Command menu / spotlight search. Pair with MiHCM `Command`. |
-| Rich Text Editor | `lexical` + MiHCM `RichTextEditor` | MiHCM wraps Lexical. Use MiHCM component first. |
-| Animation | `motion` | Transitions, layout animations, gestures. Use MiHCM motion tokens for durations. |
-| File Upload | `react-dropzone` | Drag-and-drop file uploads |
-| Error Monitoring | `@sentry/nextjs` | Error tracking, performance monitoring |
-| Analytics | `posthog-js` | Product analytics, feature flags |
-| Unit/Integration Tests | `vitest` + `@testing-library/react` | All component and unit tests |
-| E2E Tests | `playwright` | End-to-end browser tests |
-| Emails | `@react-email` | Transactional email templates |
+| Need | Library | Version | Notes |
+|------|---------|---------|-------|
+| Forms | `react-hook-form` + `@hookform/resolvers` + `zod` | 7.x / 5.x / 4.x | Zod resolver for all form validation |
+| Tables | `@tanstack/react-table` | 8.x | Headless — render with MiHCM `DataTable`/`Table` |
+| Virtualization | `@tanstack/react-virtual` | 3.x | Large lists/grids — never render 100+ items without it |
+| i18n | `next-intl` | 4.x | All user-facing strings. No hardcoded text. |
+| Dates | `date-fns` + `date-fns-tz` | 4.x / 3.x | Date manipulation + timezone. Not `moment`. Not `dayjs`. |
+| Data Visualization | `d3` | 7.x | Charts, graphs, custom viz. Bind MiHCM tokens for colors. |
+| Drag & Drop | `@dnd-kit/core` | 6.x | Sortable lists, kanban boards, reorderable UI |
+| Command Palette | `cmdk` | 1.x | Command menu / spotlight search. Pair with MiHCM `Command`. |
+| Rich Text Editor | `lexical` + MiHCM `RichTextEditor` | 0.x | MiHCM wraps Lexical. Use MiHCM component first. |
+| Animation | `motion` | 12.x | Transitions, layout animations. Use MiHCM motion tokens. |
+| File Upload | `react-dropzone` | 15.x | Drag-and-drop file uploads |
+| Error Monitoring | `@sentry/nextjs` | 10.x | Error tracking, performance monitoring |
+| Analytics | `posthog-js` | 1.x | Product analytics, feature flags |
+| Unit/Integration Tests | `vitest` + `@testing-library/react` | 4.x / 16.x | All component and unit tests |
+| E2E Tests | `playwright` | 1.x | End-to-end browser tests |
+| Emails | `@react-email` | 4.x | Transactional email templates |
 
 ### Use This, Not That
 | When you need... | USE | NEVER build/use |

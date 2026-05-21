@@ -4,8 +4,8 @@
 [PROJECT_NAME] — Next.js App Router + [YOUR_BACKEND] + MiHCM Design System.
 
 ## Stack
-**Core**: Next.js 15+ (App Router, React 19) · TypeScript strict · Zod · Zustand · TanStack Query · Tailwind CSS 4 · MiHCM Design System · Vercel
-**Forms**: react-hook-form + @hookform/resolvers + zod · **Tables**: @tanstack/react-table · **Virtualization**: @tanstack/react-virtual · **i18n**: next-intl · **Dates**: date-fns + date-fns-tz · **Viz**: d3 · **DnD**: @dnd-kit/core · **Command**: cmdk · **Rich Text**: tiptap · **Animation**: motion · **Upload**: react-dropzone · **Monitoring**: @sentry/nextjs · **Analytics**: posthog-js · **Tests**: vitest + @testing-library/react + playwright · **Email**: @react-email
+**Core**: Next.js 16 (App Router, React 19) · TypeScript 6 · Zod 4 · Zustand 5 · TanStack Query 5 · Tailwind CSS 4 · MiHCM Design System · Vercel
+**Forms**: react-hook-form 7 + @hookform/resolvers 5 + zod 4 · **Tables**: @tanstack/react-table 8 · **Virtualization**: @tanstack/react-virtual 3 · **i18n**: next-intl 4 · **Dates**: date-fns 4 + date-fns-tz 3 · **Viz**: d3 7 · **DnD**: @dnd-kit/core 6 · **Command**: cmdk 1 · **Rich Text**: lexical (MiHCM RichTextEditor) · **Animation**: motion 12 · **Upload**: react-dropzone 15 · **Monitoring**: @sentry/nextjs 10 · **Analytics**: posthog-js 1 · **Tests**: vitest 4 + @testing-library/react 16 + playwright 1 · **Email**: @react-email 4
 
 ## Data Flow
 ```
