@@ -232,7 +232,7 @@ src/
       api/                 → route handlers
     components/ds/         → MiHCM CLI-copied components (copy-paste mode)
     components/features/   → domain composites from MiHCM components
-    lib/                   → env.ts (zod), errors.ts, utils.ts (cn), [backend client]
+    lib/                   → api/ (domain modules, all server-only), auth/ (session, middleware), schemas/ (zod, shared client+server), env.ts, errors.ts, utils.ts
     actions/               → Server Actions by domain
     hooks/                 → use-[name].ts
     stores/                → Zustand stores by domain
@@ -253,8 +253,46 @@ tasks/                     → todo.md, gotchas.md
 docs/                      → ARCHITECTURE, CONVENTIONS, SECURITY, security-playbook, decisions/, runbooks/, diagrams/
 ```
 
-## Data Fetching
-Server Components → reads · Server Actions → writes (Zod validation, `revalidatePath`) · Route Handlers → webhooks/external APIs · TanStack Query → client polling/optimistic · Zustand → client UI state · `Promise.all` for parallel · `<Suspense>` to stream
+## BFF Architecture (ENFORCED)
+Browser NEVER calls backend APIs directly. All upstream calls go through Next.js (RSC / Server Action / Route Handler). Next.js holds tokens, aggregates, and returns page-shaped data.
+`Browser (cookie) → Next.js → MIHCM APIs`
+- Every `lib/api/*` file MUST start with `import 'server-only'`
+- All fetches go through `lib/api/client.ts` `apiFetch` wrapper → domain modules → pages. Never call `apiFetch` from a page.
+- Upstream tokens live in server-only env vars — NEVER `NEXT_PUBLIC_` for secrets
+
+## Data Fetching Rules
+**Rule 1 — Parallelize** (sequential awaits = bug): `const [a, b] = await Promise.all([getFoo(), getBar()]);`
+**Rule 2 — Stream** — wrap slow components in `<Suspense fallback={<Skeleton />}>`. Skeleton MUST match component dimensions (prevents layout shift).
+**Rule 3 — Deduplicate** — wrap fetch functions in `cache()` so multiple components in the same render share one upstream call.
+
+**Caching** (always set `next: { revalidate, tags }`):
+| Data | revalidate |
+|------|-----------|
+| Profile, org chart | 300s |
+| Leave balance | 60s |
+| Attendance today | 30s |
+| Notifications / real-time | 0 — use TanStack Query |
+| Reference data (depts, roles) | 3600s |
+
+Invalidate precisely: `revalidateTag('employees:list')` — not `revalidatePath('/')`. Never over-invalidate.
+
+**TanStack Query staleTimes**: profile `5min` · leave `60s` · attendance/notifications `0`
+
+**RSC → Client hydration** (interactive pages — avoids double-fetch): `prefetchQuery` on server → `HydrationBoundary state={dehydrate(qc)}` wraps the client component.
+
+**Aggregation** (dashboard / multi-source pages): `Promise.allSettled` so one failed call doesn't kill the whole page. Return `null` for failed segments.
+
+**Trim payloads**: return only fields the component needs. Never pass full upstream objects to the client.
+
+## Mutations (Server Actions First)
+Prefer Server Actions over Route Handlers for forms. Sequence: `requireSession()` → `Schema.safeParse()` → `apiFetch()` → `revalidateTag()` → `redirect()` (OUTSIDE try/catch).
+Route Handlers only for: external webhooks, mobile apps, third-party consumers.
+Errors: log full detail server-side, return generic message to client. Never expose stack traces or upstream error messages.
+
+## Decision Trees
+**Where to fetch?** On page load → RSC + `revalidate` + tags. Interactive/paginated/polled → TanStack Query (optionally prefetch with `HydrationBoundary`).
+**Server Action vs Route Handler?** Form in this app → Server Action. External / mobile / webhook → Route Handler.
+**`'use client'`?** Needs state, effects, event handlers, or browser API → `'use client'` (push directive as deep as possible). Otherwise → RSC.
 
 ## Commands
 ```bash
@@ -269,6 +307,10 @@ npm run dev · npm run build · npm run lint · npm test · npx tsc --noEmit · 
 - **Security**: `docs/security-playbook.md` rules. See `docs/SECURITY.md`.
 - **Accessibility**: WCAG 2.1 AA. See `docs/CONVENTIONS.md`.
 - **Search Audit**: checked MiHCM MCP and packages before custom code?
+- **BFF**: all `lib/api/*` have `import 'server-only'`? No upstream tokens in client bundle? No `NEXT_PUBLIC_` secrets?
+- **Fetching**: independent fetches parallelized? Slow sections in `<Suspense>`? Cache tags set and invalidated precisely?
+- **TypeScript**: strict mode, no `any`, no `@ts-ignore` without explanation?
+- **Zod**: every input boundary validated (client→server, upstream→server, webhooks)?
 
 ## Memory System
 **Session start**: read `MEMORY.md` → `tasks/todo.md` → `tasks/gotchas.md` → announce context.
