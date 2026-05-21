@@ -37,7 +37,7 @@ These four principles are the highest priority. Everything else serves them.
 
 | Domain | Library | Version |
 |--------|---------|---------|
-| Forms | `react-hook-form` + `@hookform/resolvers` + `zod` | 7.x / 5.x / 4.x |
+| Forms | `@tanstack/react-form` + `zod` | 1.x / 4.x |
 | Tables | `@tanstack/react-table` | 8.x |
 | Virtualization | `@tanstack/react-virtual` | 3.x |
 | i18n | `next-intl` | 4.x |

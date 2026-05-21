@@ -49,7 +49,7 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 ### Enforced Libraries (use these — never build from scratch)
 | Need | Library | Version | Notes |
 |------|---------|---------|-------|
-| Forms | `react-hook-form` + `@hookform/resolvers` + `zod` | 7.x / 5.x / 4.x | Zod resolver for all form validation |
+| Forms | `@tanstack/react-form` + `zod` | 1.x / 4.x | TanStack ecosystem. Built-in Zod validation. |
 | Tables | `@tanstack/react-table` | 8.x | Headless — render with MiHCM `DataTable`/`Table` |
 | Virtualization | `@tanstack/react-virtual` | 3.x | Large lists/grids — never render 100+ items without it |
 | i18n | `next-intl` | 4.x | All user-facing strings. No hardcoded text. |
@@ -69,7 +69,7 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 ### Use This, Not That
 | When you need... | USE | NEVER build/use |
 |-----------------|-----|-----------------|
-| A form | `react-hook-form` + `zod` + MiHCM `Form`/`Input` | Custom form state, uncontrolled inputs without RHF |
+| A form | `@tanstack/react-form` + `zod` + MiHCM `Form`/`Input` | Custom form state, react-hook-form, uncontrolled inputs |
 | A data table | `@tanstack/react-table` + MiHCM `DataTable` | Custom table sorting/filtering/pagination logic |
 | A long list | `@tanstack/react-virtual` | Rendering all items, custom virtual scroll |
 | Translated text | `next-intl` `useTranslations()` | Hardcoded strings, custom i18n |
@@ -106,6 +106,7 @@ Every button, input, dialog, table, card, sidebar, form — everything visible t
 - Quill, Slate, tiptap — use MiHCM `RichTextEditor` (Lexical)
 - react-spring, GSAP — use `motion`
 - react-beautiful-dnd — use `@dnd-kit/core`
+- react-hook-form, @hookform/resolvers — use `@tanstack/react-form`
 
 ### MiHCM Import Rules
 ```tsx

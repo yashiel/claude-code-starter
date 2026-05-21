@@ -31,15 +31,18 @@ Server Components default · `"use client"` only for hooks/events/browser APIs �
 
 Every library below is mandatory for its domain. Never build custom solutions when these exist.
 
-### Forms — `react-hook-form` + `@hookform/resolvers` + `zod`
-All forms use React Hook Form with Zod resolver. Pair with MiHCM `Form`, `Input`, `Select`, etc.
+### Forms — `@tanstack/react-form` + `zod`
+All forms use TanStack Form with built-in Zod validation. Pair with MiHCM `Form`, `Input`, `Select`, etc.
 ```tsx
-import { useForm } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from '@tanstack/react-form';
 import { z } from 'zod';
 const schema = z.object({ name: z.string().min(1), email: z.string().email() });
-const form = useForm({ resolver: zodResolver(schema) });
+const form = useForm({
+  defaultValues: { name: '', email: '' },
+  validators: { onChange: schema },
+});
 ```
+Never use `react-hook-form` or `@hookform/resolvers` — TanStack Form is the standard.
 
 ### Tables — `@tanstack/react-table`
 Headless table logic. Always render through MiHCM `DataTable` or `Table` components.
