@@ -44,7 +44,7 @@ These four principles are the highest priority. Everything else serves them.
 | Data Viz | `d3` |
 | Drag & Drop | `@dnd-kit/core` |
 | Command Palette | `cmdk` |
-| Rich Text | `tiptap` |
+| Rich Text | MiHCM `RichTextEditor` (Lexical) |
 | Animation | `motion` |
 | File Upload | `react-dropzone` |
 | Error Monitoring | `@sentry/nextjs` |

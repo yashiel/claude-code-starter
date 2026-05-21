@@ -55,7 +55,7 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 | Data Visualization | `d3` | Charts, graphs, custom viz. Bindwith MiHCM tokens for colors. |
 | Drag & Drop | `@dnd-kit/core` | Sortable lists, kanban boards, reorderable UI |
 | Command Palette | `cmdk` | Command menu / spotlight search. Pair with MiHCM `Command`. |
-| Rich Text Editor | `tiptap` | Rich text editing. Not Quill, not Slate, not Lexical. |
+| Rich Text Editor | `lexical` + MiHCM `RichTextEditor` | MiHCM wraps Lexical. Use MiHCM component first. |
 | Animation | `motion` | Transitions, layout animations, gestures. Use MiHCM motion tokens for durations. |
 | File Upload | `react-dropzone` | Drag-and-drop file uploads |
 | Error Monitoring | `@sentry/nextjs` | Error tracking, performance monitoring |
@@ -75,7 +75,7 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 | A chart | `d3` + MiHCM color tokens | Chart.js, Recharts, custom SVG |
 | Drag reordering | `@dnd-kit/core` | `react-beautiful-dnd`, custom drag handlers |
 | Command palette | `cmdk` + MiHCM `Command` | Custom search dialogs |
-| Rich text | `tiptap` editor | Textarea for rich content, Quill, Slate |
+| Rich text | MiHCM `RichTextEditor` (Lexical) | Textarea for rich content, Quill, Slate, tiptap |
 | Animations | `motion` + MiHCM motion tokens | Raw CSS transitions, react-spring, GSAP |
 | File drop zone | `react-dropzone` | Custom drag event handlers |
 | Error tracking | `@sentry/nextjs` | `console.error` in production, custom error services |
@@ -85,17 +85,23 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 | Email templates | `@react-email` | Raw HTML email strings |
 | UI components | `@yashiel/mihcm-ui` | shadcn, Radix direct, MUI, Chakra, Ant, Mantine |
 
+### MiHCM-First Rule (EVERY UI element)
+Every button, input, dialog, table, card, sidebar, form — everything visible to the user — MUST be a MiHCM component or a composition of MiHCM components. Never build a UI primitive from scratch. Never use raw HTML elements when a MiHCM component exists. Check MiHCM MCP (`mihcm_search_components`) before writing any JSX.
+
+**Decision order**: MiHCM component directly → compose MiHCM components → extend MiHCM component with wrapper → NEVER build from scratch.
+
 ### Banned
 - shadcn/ui — DO NOT use. Not installed. Not allowed.
 - Radix UI (direct) — use MiHCM wrappers instead (they wrap Radix internally)
 - Material UI, Chakra UI, Ant Design, Mantine, or any other component library
 - Hardcoded CSS values (hex colors, px values, raw spacing) — use MiHCM tokens and Tailwind semantic classes
 - Any UI primitive not from `@yashiel/mihcm-ui`
+- Building raw `<button>`, `<input>`, `<table>`, `<dialog>` — use MiHCM components
 - moment.js, dayjs — use `date-fns`
 - Jest — use `vitest` (unless project already uses Jest)
 - Cypress — use `playwright`
 - Chart.js, Recharts — use `d3`
-- Quill, Slate, Lexical — use `tiptap`
+- Quill, Slate, tiptap — use MiHCM `RichTextEditor` (Lexical)
 - react-spring, GSAP — use `motion`
 - react-beautiful-dnd — use `@dnd-kit/core`
 

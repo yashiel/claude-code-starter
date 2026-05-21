@@ -63,8 +63,8 @@ Sortable lists, kanban, reorderable UI. Never use `react-beautiful-dnd` or custo
 ### Command Palette — `cmdk`
 Command menu / spotlight search. Integrates with MiHCM `Command` component.
 
-### Rich Text — `tiptap`
-Rich text editing for content creation. Never use Quill, Slate, or Lexical.
+### Rich Text — MiHCM `RichTextEditor` (Lexical)
+MiHCM's `RichTextEditor` wraps Lexical. Use the MiHCM component directly — it provides themed toolbar, formatting, and Lexical plugins out of the box. For custom Lexical plugins, extend via the MiHCM component's plugin API. Never use Quill, Slate, or tiptap.
 
 ### Animation — `motion`
 All transitions and layout animations use `motion` (formerly framer-motion). Use MiHCM motion tokens for duration values (`duration-micro`, `duration-medium`, `duration-long`). Respect `prefers-reduced-motion`.
@@ -86,7 +86,16 @@ Product analytics and feature flags. Track user events, page views, and feature 
 ### Emails — `@react-email`
 Transactional email templates built with React components. Never build raw HTML email strings.
 
-## MiHCM Design System (MANDATORY)
+## MiHCM Design System (MANDATORY — every UI element)
+
+### Build Everything With MiHCM
+Every visible UI element must be a MiHCM component or a composition of MiHCM components. Never build raw HTML primitives (`<button>`, `<input>`, `<table>`, `<dialog>`) when a MiHCM component exists. Never create custom UI primitives from scratch.
+
+**Decision order when building UI**:
+1. **Use MiHCM component directly** — best option, always check first via MiHCM MCP
+2. **Compose MiHCM components** — combine multiple MiHCM components into a feature-specific composite
+3. **Extend MiHCM component** — wrap with domain-specific props/logic
+4. **NEVER** — build a UI primitive from scratch
 
 ### Component Usage
 ALL UI components must come from `@yashiel/mihcm-ui`. No exceptions. No other UI library.
