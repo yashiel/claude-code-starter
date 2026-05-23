@@ -80,7 +80,8 @@ Before building ANY UI component:
    - **Use directly** — MiHCM component fits requirements (best option)
    - **Compose** — combine MiHCM components into a feature composite
    - **Extend** — wrap MiHCM component with domain-specific props
-   - **Never**: build a UI primitive from scratch
+   - **Request** — no MiHCM component exists → create handoff doc at `docs/component-requests/[ComponentName].md` (see CLAUDE.md > Component Request Protocol). Use a MiHCM placeholder (Card/Alert with "Component pending" message) in the UI while the design team builds it.
+   - **Never**: build a custom UI primitive from scratch
 
 ## Automatic Dispatch Rules
 

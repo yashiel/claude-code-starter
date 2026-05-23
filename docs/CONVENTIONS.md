@@ -149,7 +149,8 @@ Every visible UI element must be a MiHCM component or a composition of MiHCM com
 1. **Use MiHCM component directly** — best option, always check first via MiHCM MCP
 2. **Compose MiHCM components** — combine multiple MiHCM components into a feature-specific composite
 3. **Extend MiHCM component** — wrap with domain-specific props/logic
-4. **NEVER** — build a UI primitive from scratch
+4. **Request new component** — create a handoff doc at `docs/component-requests/[ComponentName].md` for the design team (see CLAUDE.md > Component Request Protocol for template). Use a MiHCM placeholder in the UI while waiting.
+5. **NEVER** — build a custom UI primitive from scratch
 
 ### Component Usage
 ALL UI components must come from `@yashiel/mihcm-ui`. No exceptions. No other UI library.

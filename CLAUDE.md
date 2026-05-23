@@ -94,7 +94,49 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 ### MiHCM-First Rule (EVERY UI element)
 Every button, input, dialog, table, card, sidebar, form — everything visible to the user — MUST be a MiHCM component or a composition of MiHCM components. Never build a UI primitive from scratch. Never use raw HTML elements when a MiHCM component exists. Check MiHCM MCP (`mihcm_search_components`) before writing any JSX.
 
-**Decision order**: MiHCM component directly → compose MiHCM components → extend MiHCM component with wrapper → NEVER build from scratch.
+**Decision order**: MiHCM component directly → compose MiHCM components → extend MiHCM component with wrapper → **request new component** (never build from scratch).
+
+### Component Request Protocol (when MiHCM doesn't have what you need)
+If no MiHCM component exists and composing/extending won't work, **do NOT build a custom component**. Instead, create a handoff document at `docs/component-requests/[ComponentName].md` for the design team:
+
+```markdown
+# Component Request: [ComponentName]
+
+## Problem
+What UI need this component solves. What the user is trying to do.
+
+## Proposed Behavior
+- Functional requirements (what it does)
+- Interaction states (hover, focus, disabled, loading, error, empty)
+- Responsive behavior (mobile → desktop)
+
+## Props API (suggested)
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| variant | 'default' \| 'outline' | 'default' | Visual style |
+
+## Composition
+Which existing MiHCM components it should build on internally.
+
+## Accessibility
+Keyboard nav, ARIA roles, focus management, screen reader behavior.
+
+## Design References
+Links to 3-5 real production examples (Linear, Stripe, Vercel, Notion, etc).
+
+## Priority
+Critical / High / Medium / Low — and why.
+
+## Requested By
+Date, project, and context for why this is needed.
+```
+
+**Rules**:
+- Always search MiHCM MCP first (`mihcm_search_components`) — the component may already exist
+- Always try composing existing components before requesting a new one
+- Use a temporary placeholder (MiHCM `Card` or `Alert` with a "Component pending" message) in the UI while waiting
+- Never build a production-quality custom primitive — that's the design system team's job
+- Track all requests in `tasks/todo.md` under a "Component Requests" section
 
 ### Banned
 - shadcn/ui — DO NOT use. Not installed. Not allowed.
@@ -254,7 +296,7 @@ src/
     js/                    → vanilla JavaScript
     assets/                → images, fonts, icons
 tasks/                     → todo.md, gotchas.md
-docs/                      → ARCHITECTURE, CONVENTIONS, SECURITY, security-playbook, decisions/, runbooks/, diagrams/
+docs/                      → ARCHITECTURE, CONVENTIONS, SECURITY, security-playbook, decisions/, runbooks/, diagrams/, component-requests/
 ```
 
 ## BFF Architecture (ENFORCED)
