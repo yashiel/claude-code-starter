@@ -5,14 +5,14 @@
 
 ## Stack
 **Core**: Next.js 16 (App Router, React 19) · TypeScript 6 · Zod 4 · Zustand 5 · TanStack Query 5 · Tailwind CSS 4 · MiHCM Design System · Vercel
-**Forms**: @tanstack/react-form 1 + zod 4 · **Tables**: @tanstack/react-table 8 · **Virtualization**: @tanstack/react-virtual 3 · **i18n**: next-intl 4 · **Dates**: date-fns 4 + date-fns-tz 3 · **Viz**: d3 7 · **DnD**: @dnd-kit/core 6 · **Command**: cmdk 1 · **Rich Text**: lexical (MiHCM RichTextEditor) · **Animation**: motion 12 · **Upload**: react-dropzone 15 · **Monitoring**: @sentry/nextjs 10 · **Analytics**: posthog-js 1 · **Tests**: vitest 4 + @testing-library/react 16 + playwright 1 · **Email**: @react-email 4
+**Forms**: @tanstack/react-form 1 + zod 4 · **Tables**: @tanstack/react-table 8 · **Virtualization**: @tanstack/react-virtual 3 · **URL State**: nuqs 2 · **API Client**: openapi-fetch 0.x + openapi-typescript 7 · **i18n**: next-intl 4 · **Dates**: date-fns 4 + date-fns-tz 3 · **Viz**: d3 7 · **DnD**: @dnd-kit/core 6 · **Command**: cmdk 1 · **Rich Text**: lexical (MiHCM RichTextEditor) · **Animation**: motion 12 · **Upload**: react-dropzone 15 · **Monitoring**: @sentry/nextjs 10 · **Analytics**: posthog-js 1 · **Tests**: vitest 4 + @testing-library/react 16 + playwright 1 · **Email**: @react-email 4
 
 ## Data Flow
 ```
-Browser (RSC + Client + MiHCM UI + TanStack Query + Zustand)
+Browser (RSC + Client + MiHCM UI + TanStack Query + Zustand + nuqs)
   ↓
 Next.js Server (Server Actions + Route Handlers + Middleware)
-  ↓
+  ↓  openapi-fetch (type-safe, generated from OpenAPI spec)
 [YOUR_BACKEND] (Auth/DB/Storage/APIs)
 ```
 
@@ -50,6 +50,7 @@ Form → Server Action → [Auth Provider] session → httpOnly cookie → middl
 ## State Management
 - **Server state**: Server Components (primary), TanStack Query (client polling/optimistic)
 - **Client state**: Zustand stores in `src/stores/[domain].ts`
+- **URL state**: `nuqs` for filters, search, pagination, sort, tabs (shareable/bookmarkable)
 - **Form state**: TanStack React Form v1 (via MiHCM Form component) or controlled components
 
 ## Deployment

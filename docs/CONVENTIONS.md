@@ -22,9 +22,10 @@ Custom `AppError` from `lib/errors.ts` · `redirect()`/`notFound()` OUTSIDE try/
 Server Components default · `"use client"` only for hooks/events/browser APIs · No async client components · Serialisable props only (no Date/Map/Set/functions except Server Actions) · Convert dates to ISO strings before client
 
 ## State Management
-- **Zustand** for client-side state (UI state, filters, selections, form wizards)
+- **Zustand** for client-side state (ephemeral UI state: modals, tooltips, selections not in URL)
+- **nuqs** for URL-synced state (filters, search, pagination, sort, tabs — shareable/bookmarkable)
 - **Server state** via Server Components + TanStack Query for polling/optimistic
-- **No prop drilling** — Zustand stores for cross-component state
+- **No prop drilling** — Zustand stores for cross-component state, nuqs for URL state
 - Store files in `src/stores/[domain].ts`
 
 ## Enforced Library Usage
@@ -88,6 +89,56 @@ Product analytics and feature flags. Track user events, page views, and feature 
 
 ### Emails — `@react-email`
 Transactional email templates built with React components. Never build raw HTML email strings.
+
+### URL State — `nuqs`
+All URL-synced state (filters, search, pagination, sort, tabs) uses `nuqs`. Never use `useState` + `useSearchParams` + manual URL sync. Requires `NuqsAdapter` in root layout.
+```tsx
+'use client'
+import { useQueryState, useQueryStates, parseAsInteger, parseAsString } from 'nuqs'
+
+// Single param
+const [search, setSearch] = useQueryState('q', parseAsString.withDefault(''))
+
+// Multiple params (batched URL update)
+const [filters, setFilters] = useQueryStates({
+  page: parseAsInteger.withDefault(1),
+  sort: parseAsString.withDefault('name'),
+  q: parseAsString.withDefault(''),
+})
+```
+**When to use nuqs vs Zustand**: nuqs for shareable/bookmarkable state (filters, search, pagination, tabs). Zustand for ephemeral UI state (modals, tooltips, selections not in URL).
+
+### API Client — `openapi-fetch` + `openapi-typescript`
+All upstream API calls use `openapi-fetch` with types generated from OpenAPI specs. Never hand-type request/response types. Never use raw `fetch` without type safety.
+```bash
+# Generate types from OpenAPI spec (run when spec changes)
+npx openapi-typescript ./specs/api.yaml -o ./src/web/lib/api/v1.d.ts
+```
+```tsx
+// lib/api/client.ts
+import 'server-only'
+import createClient from 'openapi-fetch'
+import type { paths } from './v1'
+
+export const api = createClient<paths>({
+  baseUrl: process.env.API_BASE_URL,
+  headers: { Authorization: `Bearer ${process.env.API_TOKEN}` },
+})
+```
+```tsx
+// lib/api/employees.ts
+import 'server-only'
+import { api } from './client'
+
+export async function getEmployee(id: string) {
+  const { data, error } = await api.GET('/employees/{id}', {
+    params: { path: { id } },
+  })
+  if (error) throw new AppError('Failed to fetch employee', { cause: error })
+  return data
+}
+```
+**Rules**: `openapi-typescript` is a dev dependency (types only). Regenerate types whenever the OpenAPI spec changes. Store specs in `specs/` at project root. Every `lib/api/*` file starts with `import 'server-only'`.
 
 ## MiHCM Design System (MANDATORY — every UI element)
 
@@ -203,7 +254,7 @@ Run all 8 before writing code on any task.
 | Refactor | Architect, Engineer | QA |
 
 ## Data Fetching
-Server Components → reads · Server Actions → writes (Zod validation, `revalidatePath`) · Route Handlers → webhooks/external APIs · TanStack Query → client polling/optimistic · Zustand → client UI state
+Server Components → reads (via `openapi-fetch` client) · Server Actions → writes (Zod validation, `revalidatePath`) · Route Handlers → webhooks/external APIs · TanStack Query → client polling/optimistic · Zustand → ephemeral UI state · nuqs → URL-synced state (filters, search, pagination)
 
 ## React Rules
 No async client components · Serialisable props only across RSC boundary · Composition > booleans · `handleVerbNoun` · Avoid barrel files · `gap-*` not `space-*` · `size-*` for equal dims

@@ -52,6 +52,8 @@ These four principles are the highest priority. Everything else serves them.
 | Analytics | `posthog-js` | 1.x |
 | Unit/Integration Tests | `vitest` + `@testing-library/react` | 4.x / 16.x |
 | E2E Tests | `playwright` | 1.x |
+| URL State | `nuqs` | 2.x |
+| API Client | `openapi-fetch` + `openapi-typescript` | 0.x / 7.x |
 | Emails | `@react-email` | 4.x |
 
 **No other UI libraries.** No shadcn/ui, Radix (direct), Material UI, Chakra, Ant Design, or Mantine. All components come from `@yashiel/mihcm-ui`. No hardcoded CSS values — semantic tokens only. Never build custom solutions when an enforced library covers the need.

@@ -64,6 +64,8 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 | Analytics | `posthog-js` | 1.x | Product analytics, feature flags |
 | Unit/Integration Tests | `vitest` + `@testing-library/react` | 4.x / 16.x | All component and unit tests |
 | E2E Tests | `playwright` | 1.x | End-to-end browser tests |
+| URL State | `nuqs` | 2.x | Type-safe search params state for Next.js. Replaces `useState` + manual URL sync. |
+| API Client | `openapi-fetch` + `openapi-typescript` | 0.x / 7.x | Type-safe fetch from OpenAPI schemas. `openapi-typescript` generates types (dev). |
 | Emails | `@react-email` | 4.x | Transactional email templates |
 
 ### Use This, Not That
@@ -84,6 +86,8 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 | Analytics | `posthog-js` | Custom event tracking, Google Analytics |
 | Tests | `vitest` + `@testing-library/react` | Jest (unless already configured), Enzyme |
 | E2E tests | `playwright` | Cypress, Puppeteer |
+| URL search params state | `nuqs` `useQueryState()` / `useQueryStates()` | `useState` + `useSearchParams` + manual URL sync |
+| API calls to OpenAPI backends | `openapi-fetch` `createClient<paths>()` | Manual `fetch` wrappers, hand-typed request/response types |
 | Email templates | `@react-email` | Raw HTML email strings |
 | UI components | `@yashiel/mihcm-ui` | shadcn, Radix direct, MUI, Chakra, Ant, Mantine |
 
@@ -232,11 +236,11 @@ src/
       api/                 → route handlers
     components/ds/         → MiHCM CLI-copied components (copy-paste mode)
     components/features/   → domain composites from MiHCM components
-    lib/                   → api/ (domain modules, all server-only), auth/ (session, middleware), schemas/ (zod, shared client+server), env.ts, errors.ts, utils.ts
+    lib/                   → api/ (openapi-fetch client + domain modules, all server-only), auth/ (session, middleware), schemas/ (zod, shared client+server), env.ts, errors.ts, utils.ts
     actions/               → Server Actions by domain
     hooks/                 → use-[name].ts
     stores/                → Zustand stores by domain
-    providers/             → QueryClientProvider, ThemeProvider
+    providers/             → QueryClientProvider, ThemeProvider, NuqsAdapter
     types/                 → shared types
   mobile/                  → Expo (React Native) project
     app/                   → Expo Router screens
@@ -257,7 +261,9 @@ docs/                      → ARCHITECTURE, CONVENTIONS, SECURITY, security-pla
 Browser NEVER calls backend APIs directly. All upstream calls go through Next.js (RSC / Server Action / Route Handler). Next.js holds tokens, aggregates, and returns page-shaped data.
 `Browser (cookie) → Next.js → MIHCM APIs`
 - Every `lib/api/*` file MUST start with `import 'server-only'`
-- All fetches go through `lib/api/client.ts` `apiFetch` wrapper → domain modules → pages. Never call `apiFetch` from a page.
+- All upstream fetches use `openapi-fetch` client (type-safe, generated from OpenAPI spec) → domain modules → pages. Never call the API client from a page directly.
+- Generate types: `npx openapi-typescript ./specs/api.yaml -o ./src/web/lib/api/v1.d.ts`
+- Create client in `lib/api/client.ts` with `createClient<paths>()` from `openapi-fetch`
 - Upstream tokens live in server-only env vars — NEVER `NEXT_PUBLIC_` for secrets
 
 ## Data Fetching Rules
@@ -293,10 +299,11 @@ Errors: log full detail server-side, return generic message to client. Never exp
 **Where to fetch?** On page load → RSC + `revalidate` + tags. Interactive/paginated/polled → TanStack Query (optionally prefetch with `HydrationBoundary`).
 **Server Action vs Route Handler?** Form in this app → Server Action. External / mobile / webhook → Route Handler.
 **`'use client'`?** Needs state, effects, event handlers, or browser API → `'use client'` (push directive as deep as possible). Otherwise → RSC.
+**URL state or React state?** Filterable/sortable/paginated/shareable → `nuqs` `useQueryState()`. Ephemeral UI-only (modals, tooltips) → Zustand or `useState`.
 
 ## Commands
 ```bash
-npm run dev · npm run build · npm run lint · npm test · npx tsc --noEmit · npx @yashiel/mihcm-cli add <Component>
+npm run dev · npm run build · npm run lint · npm test · npx tsc --noEmit · npx @yashiel/mihcm-cli add <Component> · npx openapi-typescript ./specs/api.yaml -o ./src/web/lib/api/v1.d.ts
 ```
 
 ## Quality Gate (every change)
@@ -307,7 +314,8 @@ npm run dev · npm run build · npm run lint · npm test · npx tsc --noEmit · 
 - **Security**: `docs/security-playbook.md` rules. See `docs/SECURITY.md`.
 - **Accessibility**: WCAG 2.1 AA. See `docs/CONVENTIONS.md`.
 - **Search Audit**: checked MiHCM MCP and packages before custom code?
-- **BFF**: all `lib/api/*` have `import 'server-only'`? No upstream tokens in client bundle? No `NEXT_PUBLIC_` secrets?
+- **BFF**: all `lib/api/*` have `import 'server-only'`? Using `openapi-fetch` client (not raw fetch)? No upstream tokens in client bundle? No `NEXT_PUBLIC_` secrets?
+- **URL State**: filters/search/pagination use `nuqs` (not `useState` + manual URL sync)?
 - **Fetching**: independent fetches parallelized? Slow sections in `<Suspense>`? Cache tags set and invalidated precisely?
 - **TypeScript**: strict mode, no `any`, no `@ts-ignore` without explanation?
 - **Zod**: every input boundary validated (client→server, upstream→server, webhooks)?
