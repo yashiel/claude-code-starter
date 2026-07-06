@@ -25,6 +25,7 @@ These four principles are the highest priority. Everything else serves them.
 | Runtime | React | 19.x |
 | Language | TypeScript (strict mode) | 6.x |
 | Validation | Zod | 4.x |
+| Auth | IdentityServer4 (OIDC/OAuth2) + Microsoft Entra ID | — |
 | Client State | Zustand | 5.x |
 | Data Fetching | TanStack Query | 5.x |
 | Styling | Tailwind CSS (semantic tokens only) | 4.x |
@@ -58,7 +59,9 @@ These four principles are the highest priority. Everything else serves them.
 
 **No other UI libraries.** No shadcn/ui, Radix (direct), Material UI, Chakra, Ant Design, or Mantine. All components come from `@yashiel/mihcm-ui`. No hardcoded CSS values — semantic tokens only. Never build custom solutions when an enforced library covers the need.
 
-**Backend, auth, and payments are left open** — add whatever fits your needs.
+**Auth is fixed**: MiHCM authorization depends on IdentityServer4 (OIDC/OAuth2 token service) with Microsoft Entra ID federated behind it as the corporate IdP. Apps act as BFF confidential clients (Authorization Code + PKCE) — tokens stay server-side, the browser only holds an httpOnly session cookie. Full flow: `docs/ARCHITECTURE.md > Auth Flow`.
+
+**Backend and payments are left open** — add whatever fits your needs.
 
 ---
 
@@ -127,7 +130,7 @@ claude-code-starter/
 │   │   ├── components/
 │   │   │   ├── ds/                  <- MiHCM CLI-copied components
 │   │   │   └── features/            <- Domain composites from MiHCM
-│   │   ├── lib/                     <- env.ts, errors.ts, utils.ts
+│   │   ├── lib/                     <- api/ (openapi-fetch, server-only), auth/, schemas/, env.ts, errors.ts, utils.ts
 │   │   ├── actions/                 <- Server Actions by domain
 │   │   ├── hooks/                   <- Custom React hooks
 │   │   ├── stores/                  <- Zustand stores by domain
@@ -150,6 +153,7 @@ claude-code-starter/
 │   ├── CONVENTIONS.md               <- Code quality, MiHCM usage, design standards
 │   ├── SECURITY.md                  <- 24-rule quick reference
 │   ├── security-playbook.md         <- Full security playbook (100+ rules)
+│   ├── component-requests/          <- Design-team handoff docs (TEMPLATE.md)
 │   ├── decisions/                   <- Architecture Decision Records
 │   ├── diagrams/                    <- 7 Mermaid diagrams
 │   └── runbooks/mcp-setup.md       <- MCP server setup guide
@@ -177,6 +181,10 @@ MiHCM MCP auto-loads for any UI/design task. See [docs/runbooks/mcp-setup.md](do
 ---
 
 ## How It Works
+
+### Context Design
+
+`CLAUDE.md` is the always-loaded enforcement layer (~2,400 words). Detail docs — `CONVENTIONS.md`, `AGENTS.md`, `ARCHITECTURE.md`, `security-playbook.md`, `mcp-setup.md` — load **on demand** via read-when triggers listed in `CLAUDE.md > Docs`; only `docs/SECURITY.md` stays auto-imported. This keeps per-session instruction cost ~70% lower than importing everything, with every rule preserved exactly once.
 
 ### 8-Role Thinking
 
@@ -250,7 +258,8 @@ import { DataTable } from '@yashiel/mihcm-ui/DataTable';
 | What | Where |
 |------|-------|
 | Project name and description | `CLAUDE.md` top section |
-| Backend/auth/payments | Update Stack in `CLAUDE.md`, add env vars, update `docs/ARCHITECTURE.md` |
+| Backend/payments | Update Stack in `CLAUDE.md`, add env vars, update `docs/ARCHITECTURE.md` |
+| Auth topology | `docs/ARCHITECTURE.md > Auth Flow` (IdentityServer4 + Entra ID) |
 | MCP servers | `.mcp.json` and `docs/runbooks/mcp-setup.md` |
 | Environment variables | `.env.example` |
 | Permissions and hooks | `.claude/settings.json` |
