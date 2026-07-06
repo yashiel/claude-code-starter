@@ -6,8 +6,8 @@
 classDiagram
     %% Add classes as services and models are created
     %% Example:
-    %% class AppwriteService {
-    %%     +createSessionClient() Client
-    %%     +createAdminClient() Client
+    %% class ApiClient {
+    %%     +GET(path, params) Response
+    %%     +POST(path, body) Response
     %% }
 ```

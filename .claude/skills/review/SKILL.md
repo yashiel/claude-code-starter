@@ -6,10 +6,10 @@ allowed-tools: Bash(git *), Bash(npm run *), Bash(npx *), Read, Glob, Grep
 
 Challenge own work first. "Is there a cleaner way?" "Would a staff engineer approve?"
 
-**Security** — AUTH/AUTHZ/INJ/PAY/AW rules from playbook. RSC boundary violations. Secrets in client. Webhook sigs.
+**Security** — AUTH/AUTHZ/INJ/PAY/API rules from playbook. RSC boundary violations. Secrets in client. Webhook sigs.
 **QA** — worst+best case tests exist? Auth/payment edge cases? Error boundaries + loading + empty states? `npm test` passes?
 **Architect** — waterfalls? Correct fetch pattern? TanStack only where needed? Separation of concerns?
-**UX** — mobile-first? WCAG 2.1 AA? shadcn patterns correct? Skeletons not spinners?
+**UX** — mobile-first? WCAG 2.1 AA? MiHCM patterns correct? Skeletons not spinners?
 **Code** — dead code? duplicates? beginner-readable? <300 lines? magic values? Elegance: hacky → "implement the elegant solution"
 
 Output per finding: Severity · Rule ID · File:line · Issue (1-2 sentences) · Fix

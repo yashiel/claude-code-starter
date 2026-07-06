@@ -9,5 +9,5 @@ allowed-tools: Bash(git *), Bash(npm run *), Bash(npx *), Read, Glob, Grep
 4. QA: worst+best case tests · payment edge cases · error boundaries
 5. UX: semantic tokens · responsive · accessible
 
-PR description: What · Why · How · Security checklist · Testing (worst+best+manual) · Changes · Appwrite/shadcn/Payment changes · Screenshots
+PR description: What · Why · How · Security checklist · Testing (worst+best+manual) · Changes · Backend/MiHCM/Payment changes · Screenshots
 Split if >400 lines.

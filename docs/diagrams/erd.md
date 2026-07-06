@@ -1,6 +1,6 @@
 # Entity Relationship Diagram
 
-> Appwrite collections, attributes, and relationships. Update on ANY schema change.
+> Database entities, attributes, and relationships. Update on ANY schema change.
 
 ## Database Schema
 
@@ -17,4 +17,4 @@ erDiagram
     %% }
 ```
 
-<!-- Update this diagram whenever you create, modify, or delete an Appwrite collection -->
+<!-- Update this diagram whenever you create, modify, or delete a database table/collection -->

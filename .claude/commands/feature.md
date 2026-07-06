@@ -19,9 +19,10 @@ argument-hint: [feature-description]
 3. **Auto-load skills** per CLAUDE.md skill matrix
 
 4. **Research** using MCP tools:
+   - **MiHCM MCP** → `mihcm_search_components` before any UI work
    - **Figma MCP** → `get_design_context` if designs exist
    - **Context7 MCP** → latest API docs for libraries being used
-   - Also: `npx shadcn@latest info/search`, existing code, docs/
+   - Also: existing code, docs/
 
 5. Branch: `feat/[name]` from main
 

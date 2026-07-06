@@ -35,7 +35,7 @@ Write plan to `tasks/todo.md` with:
 **STOP — wait for approval.**
 
 ## Step 5: Execute (after approval)
-Appwrite → shadcn add → Server → Client → Tests.
+Backend → MiHCM components (`npx @yashiel/mihcm-cli add`) → Server → Client → Tests.
 If sideways: **STOP and re-plan.**
 
 ## Step 6: Close

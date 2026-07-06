@@ -1,6 +1,6 @@
 # Scripts & Tools
 
-`tools/scripts/` — automation (setup-appwrite, seed-data, check-env)
+`tools/scripts/` — automation (setup-backend, seed-data, check-env)
 `tools/prompts/` — reusable prompt templates for common tasks
 `scripts/` — build/deploy/migration scripts
 
