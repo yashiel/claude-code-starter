@@ -35,161 +35,61 @@ Transform every task into verifiable goals. "Add validation" becomes "write test
 | Runtime | React | 19.x | Server Components default |
 | Language | TypeScript | 6.x | Strict mode, no `any` |
 | Validation | Zod | 4.x | All input boundaries |
+| Auth | IdentityServer4 (OIDC/OAuth2) + Microsoft Entra ID | — | MiHCM authorization depends on both. Auth Code + PKCE via BFF; tokens never reach browser |
 | State (client) | Zustand | 5.x | Client-side state only |
 | Data fetching (client) | TanStack Query | 5.x | Client polling/optimistic only |
 | Styling | Tailwind CSS | 4.x | Semantic tokens only, no hardcoded values |
-| Design System | MiHCM Design System (`@yashiel/mihcm-ui`) | latest | ALL UI components from here |
-| Icons | MiHCM Icons (`@yashiel/mihcm-icons`) | latest | 1,703 Lucide-based icons |
-| Tokens | MiHCM Tokens (`@yashiel/mihcm-tokens`) | latest | CSS variables + TS constants |
-| Theme | MiHCM Theme (`@yashiel/mihcm-theme`) | latest | Tailwind 4 preset + globals.css |
-| AI UI | MiHCM AI UI (`@yashiel/mihcm-ai-ui`) | latest | Zod-validated generative UI |
-| CLI | MiHCM CLI (`@yashiel/mihcm-cli`) | latest | `npx @yashiel/mihcm-cli add <Component>` |
+| Design System | MiHCM suite (`@yashiel/mihcm-ui`, `-icons` 1,703 Lucide-based, `-tokens`, `-theme`, `-ai-ui`, `-cli`) | latest | ALL UI from here. `npx @yashiel/mihcm-cli add <Component>` |
 | Deployment | Vercel | — | Git-push deploys |
 
-### Enforced Libraries (use these — never build from scratch)
-| Need | Library | Version | Notes |
-|------|---------|---------|-------|
-| Forms | `@tanstack/react-form` + `zod` | 1.x / 4.x | TanStack ecosystem. Built-in Zod validation. |
-| Tables | `@tanstack/react-table` | 8.x | Headless — render with MiHCM `DataTable`/`Table` |
-| Virtualization | `@tanstack/react-virtual` | 3.x | Large lists/grids — never render 100+ items without it |
-| i18n | `next-intl` | 4.x | All user-facing strings. No hardcoded text. |
-| Dates | `date-fns` + `date-fns-tz` | 4.x / 3.x | Date manipulation + timezone. Not `moment`. Not `dayjs`. |
-| Data Visualization | `d3` | 7.x | Charts, graphs, custom viz. Bind MiHCM tokens for colors. |
-| Drag & Drop | `@dnd-kit/core` | 6.x | Sortable lists, kanban boards, reorderable UI |
-| Command Palette | `cmdk` | 1.x | Command menu / spotlight search. Pair with MiHCM `Command`. |
-| Rich Text Editor | `lexical` + MiHCM `RichTextEditor` | 0.x | MiHCM wraps Lexical. Use MiHCM component first. |
-| Animation | `motion` | 12.x | Transitions, layout animations. Use MiHCM motion tokens. |
-| File Upload | `react-dropzone` | 15.x | Drag-and-drop file uploads |
-| Error Monitoring | `@sentry/nextjs` | 10.x | Error tracking, performance monitoring |
-| Analytics | `posthog-js` | 1.x | Product analytics, feature flags |
-| Unit/Integration Tests | `vitest` + `@testing-library/react` | 4.x / 16.x | All component and unit tests |
-| E2E Tests | `playwright` | 1.x | End-to-end browser tests |
-| URL State | `nuqs` | 2.x | Type-safe search params state for Next.js. Replaces `useState` + manual URL sync. |
-| API Client | `openapi-fetch` + `openapi-typescript` | 0.x / 7.x | Type-safe fetch from OpenAPI schemas. `openapi-typescript` generates types (dev). |
-| Emails | `@react-email` | 4.x | Transactional email templates |
+### Libraries (USE these — NEVER the alternatives, never build from scratch)
+| Need | USE | Version | NEVER |
+|------|-----|---------|-------|
+| Forms | `@tanstack/react-form` + `zod` + MiHCM `Form`/`Input` | 1.x / 4.x | react-hook-form, @hookform/resolvers, custom form state, uncontrolled inputs |
+| Tables | `@tanstack/react-table` + MiHCM `DataTable`/`Table` | 8.x | Custom sorting/filtering/pagination logic |
+| Long lists (100+ items) | `@tanstack/react-virtual` | 3.x | Rendering all items, custom virtual scroll |
+| i18n | `next-intl` `useTranslations()` | 4.x | Hardcoded display strings, custom i18n |
+| Dates | `date-fns` + `date-fns-tz` | 4.x / 3.x | moment, dayjs, raw `Date` formatting |
+| Data viz | `d3` + MiHCM color tokens | 7.x | Chart.js, Recharts, custom SVG |
+| Drag & drop | `@dnd-kit/core` | 6.x | react-beautiful-dnd, custom drag handlers |
+| Command palette | `cmdk` + MiHCM `Command` | 1.x | Custom search dialogs |
+| Rich text | MiHCM `RichTextEditor` (wraps Lexical) | 0.x | Quill, Slate, tiptap, textarea for rich content |
+| Animation | `motion` + MiHCM motion tokens | 12.x | Raw CSS transitions, react-spring, GSAP |
+| File upload | `react-dropzone` | 15.x | Custom drag event handlers |
+| Error monitoring | `@sentry/nextjs` | 10.x | console.error in production, custom error services |
+| Analytics | `posthog-js` | 1.x | Custom event tracking, Google Analytics |
+| Unit/integration tests | `vitest` + `@testing-library/react` | 4.x / 16.x | Jest (unless already configured), Enzyme |
+| E2E tests | `playwright` | 1.x | Cypress, Puppeteer |
+| URL state | `nuqs` `useQueryState()` / `useQueryStates()` | 2.x | `useState` + `useSearchParams` + manual URL sync |
+| API client | `openapi-fetch` `createClient<paths>()` + `openapi-typescript` (dev, generates types) | 0.x / 7.x | Manual fetch wrappers, hand-typed request/response types |
+| Emails | `@react-email` | 4.x | Raw HTML email strings |
+| UI components | `@yashiel/mihcm-ui` | latest | shadcn/ui, Radix direct, MUI, Chakra, Ant, Mantine — all banned |
 
-### Use This, Not That
-| When you need... | USE | NEVER build/use |
-|-----------------|-----|-----------------|
-| A form | `@tanstack/react-form` + `zod` + MiHCM `Form`/`Input` | Custom form state, react-hook-form, uncontrolled inputs |
-| A data table | `@tanstack/react-table` + MiHCM `DataTable` | Custom table sorting/filtering/pagination logic |
-| A long list | `@tanstack/react-virtual` | Rendering all items, custom virtual scroll |
-| Translated text | `next-intl` `useTranslations()` | Hardcoded strings, custom i18n |
-| Date formatting | `date-fns` `format()` / `formatDistance()` | `new Date().toLocaleDateString()`, moment, dayjs |
-| A chart | `d3` + MiHCM color tokens | Chart.js, Recharts, custom SVG |
-| Drag reordering | `@dnd-kit/core` | `react-beautiful-dnd`, custom drag handlers |
-| Command palette | `cmdk` + MiHCM `Command` | Custom search dialogs |
-| Rich text | MiHCM `RichTextEditor` (Lexical) | Textarea for rich content, Quill, Slate, tiptap |
-| Animations | `motion` + MiHCM motion tokens | Raw CSS transitions, react-spring, GSAP |
-| File drop zone | `react-dropzone` | Custom drag event handlers |
-| Error tracking | `@sentry/nextjs` | `console.error` in production, custom error services |
-| Analytics | `posthog-js` | Custom event tracking, Google Analytics |
-| Tests | `vitest` + `@testing-library/react` | Jest (unless already configured), Enzyme |
-| E2E tests | `playwright` | Cypress, Puppeteer |
-| URL search params state | `nuqs` `useQueryState()` / `useQueryStates()` | `useState` + `useSearchParams` + manual URL sync |
-| API calls to OpenAPI backends | `openapi-fetch` `createClient<paths>()` | Manual `fetch` wrappers, hand-typed request/response types |
-| Email templates | `@react-email` | Raw HTML email strings |
-| UI components | `@yashiel/mihcm-ui` | shadcn, Radix direct, MUI, Chakra, Ant, Mantine |
+Usage detail and code examples per library: `docs/CONVENTIONS.md`.
 
 ### MiHCM-First Rule (EVERY UI element)
-Every button, input, dialog, table, card, sidebar, form — everything visible to the user — MUST be a MiHCM component or a composition of MiHCM components. Never build a UI primitive from scratch. Never use raw HTML elements when a MiHCM component exists. Check MiHCM MCP (`mihcm_search_components`) before writing any JSX.
+- Every visible element MUST be a MiHCM component or composition. Never raw `<button>`, `<input>`, `<table>`, `<dialog>` when a MiHCM component exists. Never build a UI primitive from scratch.
+- Check MiHCM MCP (`mihcm_search_components`) before writing any JSX.
+- **Decision order**: MiHCM component directly → compose MiHCM components → extend with wrapper → **request new component** (never build).
+- **Component Request Protocol**: no MiHCM component fits and compose/extend won't work → do NOT build custom. Copy `docs/component-requests/TEMPLATE.md` to `docs/component-requests/[ComponentName].md` for the design team. Use MiHCM `Card`/`Alert` "Component pending" placeholder meanwhile. Track requests in `tasks/todo.md` under "Component Requests".
+- **Imports**: subpath only — `import { Button } from '@yashiel/mihcm-ui/Button'`. Never barrel `from '@yashiel/mihcm-ui'`.
 
-**Decision order**: MiHCM component directly → compose MiHCM components → extend MiHCM component with wrapper → **request new component** (never build from scratch).
-
-### Component Request Protocol (when MiHCM doesn't have what you need)
-If no MiHCM component exists and composing/extending won't work, **do NOT build a custom component**. Instead, create a handoff document at `docs/component-requests/[ComponentName].md` for the design team:
-
-```markdown
-# Component Request: [ComponentName]
-
-## Problem
-What UI need this component solves. What the user is trying to do.
-
-## Proposed Behavior
-- Functional requirements (what it does)
-- Interaction states (hover, focus, disabled, loading, error, empty)
-- Responsive behavior (mobile → desktop)
-
-## Props API (suggested)
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| variant | 'default' \| 'outline' | 'default' | Visual style |
-
-## Composition
-Which existing MiHCM components it should build on internally.
-
-## Accessibility
-Keyboard nav, ARIA roles, focus management, screen reader behavior.
-
-## Design References
-Links to 3-5 real production examples (Linear, Stripe, Vercel, Notion, etc).
-
-## Priority
-Critical / High / Medium / Low — and why.
-
-## Requested By
-Date, project, and context for why this is needed.
-```
-
-**Rules**:
-- Always search MiHCM MCP first (`mihcm_search_components`) — the component may already exist
-- Always try composing existing components before requesting a new one
-- Use a temporary placeholder (MiHCM `Card` or `Alert` with a "Component pending" message) in the UI while waiting
-- Never build a production-quality custom primitive — that's the design system team's job
-- Track all requests in `tasks/todo.md` under a "Component Requests" section
-
-### Banned
-- shadcn/ui — DO NOT use. Not installed. Not allowed.
-- Radix UI (direct) — use MiHCM wrappers instead (they wrap Radix internally)
-- Material UI, Chakra UI, Ant Design, Mantine, or any other component library
-- Hardcoded CSS values (hex colors, px values, raw spacing) — use MiHCM tokens and Tailwind semantic classes
-- Any UI primitive not from `@yashiel/mihcm-ui`
-- Building raw `<button>`, `<input>`, `<table>`, `<dialog>` — use MiHCM components
-- moment.js, dayjs — use `date-fns`
-- Jest — use `vitest` (unless project already uses Jest)
-- Cypress — use `playwright`
-- Chart.js, Recharts — use `d3`
-- Quill, Slate, tiptap — use MiHCM `RichTextEditor` (Lexical)
-- react-spring, GSAP — use `motion`
-- react-beautiful-dnd — use `@dnd-kit/core`
-- react-hook-form, @hookform/resolvers — use `@tanstack/react-form`
-
-### MiHCM Import Rules
-```tsx
-// CORRECT — subpath import (tree-shaking)
-import { Button } from '@yashiel/mihcm-ui/Button';
-import { DataTable } from '@yashiel/mihcm-ui/DataTable';
-
-// WRONG — barrel import pulls everything
-import { Button } from '@yashiel/mihcm-ui';
-```
+### Also Banned
+- Hardcoded CSS values (hex colors, px values, raw spacing) — MiHCM tokens and Tailwind semantic classes only
+- Icons outside `@yashiel/mihcm-icons`
 
 ## MCP Servers (connected tools)
 
-| Server | Purpose | Auto-load When |
+| Server | Purpose | Auto-load when |
 |--------|---------|---------------|
 | **MiHCM** | Component search, token lookup, snippet review, contract validation, RSC boundary check | ANY UI/design work (ALWAYS) |
-| **Figma** | Design-to-code context, screenshots, diagrams | Implementing designs, design references |
+| **Figma** | Design-to-code context, screenshots, diagrams | Implementing designs |
 | **Vercel** | Deployments, toolbar threads | Deploy, preview, production issues |
 | **Context7** | Up-to-date docs for any library | ANY library/framework question |
 
-Setup guide: `docs/runbooks/mcp-setup.md`
+**MCP-First Rule**: connected MCP tool can handle it → use it. MiHCM MCP > guessing. Context7 > training data. Figma > imagination. **MiHCM MCP is MANDATORY for all design/UI work.** Setup: `docs/runbooks/mcp-setup.md`.
 
-**MCP-First Rule**: When a connected MCP tool can handle the task, use it. MiHCM MCP for component details > guessing. Context7 for latest docs > training data. Figma MCP for design context > imagination.
-
-**MiHCM MCP is MANDATORY for all design/UI work.** Before building any component, search the MiHCM design system first.
-
-## Auto-Loading Protocol (MANDATORY)
-
-### MCP Auto-Load
-| Trigger | MCP to Load |
-|---------|------------|
-| ANY UI/component/design work | MiHCM (always), Figma (if design ref exists) |
-| Library/framework questions | Context7 |
-| Deployment/preview | Vercel |
-| Design-to-code | MiHCM + Figma |
-
-### Skill Auto-Load
+## Skill Auto-Load (MANDATORY)
 | Task | Skills |
 |------|--------|
 | ANY UI | `frontend-design`, `refactoring-ui`, `ux-heuristics`, `microinteractions`, `web-design-guidelines`, `design-auditor`, `top-design` + MiHCM MCP |
@@ -201,7 +101,7 @@ Setup guide: `docs/runbooks/mcp-setup.md`
 | Database | `database-schema-designer` + `docs/security-playbook.md` §10 |
 | React | `vercel-react-best-practices`, `vercel-composition-patterns` |
 | Next.js | `next-best-practices`, `next-cache-components` |
-| MiHCM components | MiHCM MCP tools: `mihcm_search_components`, `mihcm_get_component` |
+| MiHCM components | MiHCM MCP: `mihcm_search_components`, `mihcm_get_component` |
 | Deploy | `deploy-to-vercel` |
 | Tests | `webapp-testing`, `agent-browser` |
 | Research | `firecrawl-search`, `firecrawl-scrape`, `firecrawl-crawl` |
@@ -258,60 +158,33 @@ Run all 8 before writing code. Details in `docs/CONVENTIONS.md`.
 
 If ANY phase fails, task is NOT done.
 
-## Principles
-- **Karpathy First** — think, simplify, be surgical, verify. Always.
-- **MiHCM Design System** — every UI component, token, icon from here. No exceptions.
-- **No Hardcoded Values** — semantic tokens for everything.
-- **Simplicity** — if 200 lines could be 50, rewrite.
-- **Immutability** — new objects, never mutate. Pure functions over side effects.
-- **Search First** — MiHCM MCP → packages → skills. Never reinvent.
-- **Verification > Generation** — proving > writing.
-- **Memory Is Continuous** — update `MEMORY.md` at session end.
-
 ## Structure
 ```
 src/
   web/                     → MiHCM Next.js project
-    app/                   → App Router (layout, page, loading, error, not-found, global-error)
-      (auth)/              → login, register
-      (dashboard)/         → protected routes
-      api/                 → route handlers
-    components/ds/         → MiHCM CLI-copied components (copy-paste mode)
-    components/features/   → domain composites from MiHCM components
-    lib/                   → api/ (openapi-fetch client + domain modules, all server-only), auth/ (session, middleware), schemas/ (zod, shared client+server), env.ts, errors.ts, utils.ts
-    actions/               → Server Actions by domain
-    hooks/                 → use-[name].ts
-    stores/                → Zustand stores by domain
-    providers/             → QueryClientProvider, ThemeProvider, NuqsAdapter
-    types/                 → shared types
-  mobile/                  → Expo (React Native) project
-    app/                   → Expo Router screens
-    components/            → MiHCM native components
-    hooks/                 → mobile-specific hooks
-    stores/                → Zustand stores (shared patterns with web)
-    types/                 → shared types
-  static/                  → Plain HTML/CSS/JS project
-    pages/                 → HTML pages
-    css/                   → stylesheets (MiHCM tokens via CSS variables)
-    js/                    → vanilla JavaScript
-    assets/                → images, fonts, icons
+    app/                   → App Router: (auth)/ (dashboard)/ api/ + layout, page, loading, error, not-found
+    components/ds/         → MiHCM CLI-copied components · components/features/ → domain composites
+    lib/                   → api/ (openapi-fetch client + domain modules, all server-only), auth/, schemas/ (zod, shared), env.ts, errors.ts, utils.ts
+    actions/               → Server Actions by domain · hooks/ · stores/ (Zustand by domain) · providers/ (QueryClient, Theme, NuqsAdapter) · types/
+  mobile/                  → Expo: app/ (Expo Router), components/, hooks/, stores/, types/
+  static/                  → Plain HTML/CSS/JS: pages/, css/ (MiHCM tokens via CSS vars), js/, assets/
 tasks/                     → todo.md, gotchas.md
 docs/                      → ARCHITECTURE, CONVENTIONS, SECURITY, security-playbook, decisions/, runbooks/, diagrams/, component-requests/
 ```
 
 ## BFF Architecture (ENFORCED)
-Browser NEVER calls backend APIs directly. All upstream calls go through Next.js (RSC / Server Action / Route Handler). Next.js holds tokens, aggregates, and returns page-shaped data.
+Browser NEVER calls backend APIs directly. All upstream calls go through Next.js (RSC / Server Action / Route Handler). Next.js holds tokens, aggregates, returns page-shaped data.
 `Browser (cookie) → Next.js → MIHCM APIs`
+- Auth: OIDC Authorization Code + PKCE against IdentityServer4 (Entra ID as corporate IdP behind it). Next.js is the confidential client — access/refresh tokens stay server-side; browser holds only the httpOnly session cookie. Upstream MIHCM API calls attach the bearer access token server-side.
 - Every `lib/api/*` file MUST start with `import 'server-only'`
-- All upstream fetches use `openapi-fetch` client (type-safe, generated from OpenAPI spec) → domain modules → pages. Never call the API client from a page directly.
-- Generate types: `npx openapi-typescript ./specs/api.yaml -o ./src/web/lib/api/v1.d.ts`
-- Create client in `lib/api/client.ts` with `createClient<paths>()` from `openapi-fetch`
+- All upstream fetches use `openapi-fetch` client → domain modules → pages. Never call the client from a page directly.
+- Generate types: `npx openapi-typescript ./specs/api.yaml -o ./src/web/lib/api/v1.d.ts` · client via `createClient<paths>()` in `lib/api/client.ts`
 - Upstream tokens live in server-only env vars — NEVER `NEXT_PUBLIC_` for secrets
 
 ## Data Fetching Rules
 **Rule 1 — Parallelize** (sequential awaits = bug): `const [a, b] = await Promise.all([getFoo(), getBar()]);`
 **Rule 2 — Stream** — wrap slow components in `<Suspense fallback={<Skeleton />}>`. Skeleton MUST match component dimensions (prevents layout shift).
-**Rule 3 — Deduplicate** — wrap fetch functions in `cache()` so multiple components in the same render share one upstream call.
+**Rule 3 — Deduplicate** — wrap fetch functions in `cache()` so multiple components share one upstream call.
 
 **Caching** (always set `next: { revalidate, tags }`):
 | Data | revalidate |
@@ -322,18 +195,14 @@ Browser NEVER calls backend APIs directly. All upstream calls go through Next.js
 | Notifications / real-time | 0 — use TanStack Query |
 | Reference data (depts, roles) | 3600s |
 
-Invalidate precisely: `revalidateTag('employees:list')` — not `revalidatePath('/')`. Never over-invalidate.
-
+Invalidate precisely: `revalidateTag('employees:list')` — never `revalidatePath('/')`.
 **TanStack Query staleTimes**: profile `5min` · leave `60s` · attendance/notifications `0`
-
-**RSC → Client hydration** (interactive pages — avoids double-fetch): `prefetchQuery` on server → `HydrationBoundary state={dehydrate(qc)}` wraps the client component.
-
-**Aggregation** (dashboard / multi-source pages): `Promise.allSettled` so one failed call doesn't kill the whole page. Return `null` for failed segments.
-
+**RSC → Client hydration** (interactive pages, avoids double-fetch): `prefetchQuery` on server → `HydrationBoundary state={dehydrate(qc)}`.
+**Aggregation** (multi-source pages): `Promise.allSettled` — one failed call doesn't kill the page; return `null` for failed segments.
 **Trim payloads**: return only fields the component needs. Never pass full upstream objects to the client.
 
 ## Mutations (Server Actions First)
-Prefer Server Actions over Route Handlers for forms. Sequence: `requireSession()` → `Schema.safeParse()` → `apiFetch()` → `revalidateTag()` → `redirect()` (OUTSIDE try/catch).
+Prefer Server Actions over Route Handlers for forms. Sequence: `requireSession()` → `Schema.safeParse()` → domain API call (`lib/api/*`) → `revalidateTag()` → `redirect()` (OUTSIDE try/catch).
 Route Handlers only for: external webhooks, mobile apps, third-party consumers.
 Errors: log full detail server-side, return generic message to client. Never expose stack traces or upstream error messages.
 
@@ -341,7 +210,7 @@ Errors: log full detail server-side, return generic message to client. Never exp
 **Where to fetch?** On page load → RSC + `revalidate` + tags. Interactive/paginated/polled → TanStack Query (optionally prefetch with `HydrationBoundary`).
 **Server Action vs Route Handler?** Form in this app → Server Action. External / mobile / webhook → Route Handler.
 **`'use client'`?** Needs state, effects, event handlers, or browser API → `'use client'` (push directive as deep as possible). Otherwise → RSC.
-**URL state or React state?** Filterable/sortable/paginated/shareable → `nuqs` `useQueryState()`. Ephemeral UI-only (modals, tooltips) → Zustand or `useState`.
+**URL state or React state?** Filterable/sortable/paginated/shareable → `nuqs`. Ephemeral UI-only (modals, tooltips) → Zustand or `useState`.
 
 ## Commands
 ```bash
@@ -367,15 +236,15 @@ npm run dev · npm run build · npm run lint · npm test · npx tsc --noEmit · 
 **Session end**: update all three.
 
 ## Diagrams (`docs/diagrams/`, Mermaid)
-Update when architecture changes. ERD + Sequence = highest priority. See `docs/ARCHITECTURE.md`.
+Update when architecture changes, in the SAME commit. ERD + Sequence = highest priority. Table of triggers: `docs/ARCHITECTURE.md`.
 
-## Docs
-- **@docs/AGENTS.md** — multi-agent orchestration, dispatch rules
-- **@docs/ARCHITECTURE.md** — system design, data flow, MiHCM integration, diagrams
-- **@docs/CONVENTIONS.md** — naming, RSC, MiHCM usage, code quality, design standards, accessibility, 8-lens details
-- **@docs/security-playbook.md** — 100+ rules (AUTH/INJ/AUTHZ)
-- **@docs/SECURITY.md** — 24-rule quick-ref
-- **@docs/runbooks/mcp-setup.md** — MCP server setup including MiHCM
+## Docs (read on demand — do NOT assume contents, open the file)
+- **docs/AGENTS.md** — read before dispatching subagents: roster, chains, dispatch rules
+- **docs/ARCHITECTURE.md** — read for system design, data flow, deployment, diagram triggers
+- **docs/CONVENTIONS.md** — read before writing code: naming, RSC rules, per-library usage + examples, MiHCM component catalog + tokens, design standards, accessibility, 8-lens detail
+- **docs/security-playbook.md** — read during security review or auth/payment/PII/upload/webhook work: 100+ rules (AUTH/INJ/AUTHZ/...)
+- **docs/runbooks/mcp-setup.md** — read when configuring MCP servers
+- @docs/SECURITY.md
 
 ## Publishing (Dual-Repo)
 1. **`{project-name}`** — everything (CLAUDE.md, docs/, tasks/, src/, configs)
